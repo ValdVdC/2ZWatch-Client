@@ -1,0 +1,429 @@
+<div class="series-detail-page">
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="loading">
+    <div class="loading-hero">
+      <div class="loading-backdrop"></div>
+      <div class="loading-content">
+        <div class="loading-poster"></div>
+        <div class="loading-info">
+          <div class="loading-title"></div>
+          <div class="loading-meta"></div>
+          <div class="loading-overview"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-container" *ngIf="error && !loading">
+    <div class="container">
+      <div class="error-content">
+        <div class="error-icon">😔</div>
+        <h2>Oops! Algo deu errado</h2>
+        <p>{{ error }}</p>
+        <div class="error-actions">
+          <button class="btn btn-primary" (click)="goBack()">
+            Voltar aos Filmes
+          </button>
+          <button class="btn btn-secondary" (click)="retry()">
+            Tentar Novamente
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Series Content -->
+  <div class="series-content" *ngIf="series && !loading">
+    <!-- Back Navigation -->
+    <div class="back-navigation">
+      <div class="container">
+        <button class="back-btn" (click)="goBack()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Voltar
+        </button>
+      </div>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="series-hero">
+      <!-- Backdrop -->
+      <div class="hero-backdrop" *ngIf="backdropUrl">
+        <img [src]="backdropUrl" [alt]="series.name" loading="lazy">
+        <div class="backdrop-overlay"></div>
+      </div>
+
+      <!-- Hero Content -->
+      <div class="hero-content">
+        <div class="container">
+          <div class="hero-grid">
+            <!-- Poster -->
+            <div class="hero-poster">
+              <div class="poster-container">
+                <img 
+                  [src]="posterUrl" 
+                  [alt]="series.name" 
+                  class="poster-image"
+                  loading="lazy"
+                  onerror="this.src='/assets/placeholder-series.jpg'">
+              </div>
+            </div>
+
+            <!-- Series Info -->
+            <div class="hero-info">
+              <div class="series-header">
+                <h1 class="series-title">{{ series.name }}</h1>
+                <p class="series-tagline" *ngIf="series.tagline">{{ series.tagline }}</p>
+              </div>
+
+              <!-- Meta Information -->
+              <div class="series-meta">
+                <span class="meta-item" *ngIf="releaseYear">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  {{ releaseYear }}
+                </span>
+                
+                <!-- <span class="meta-item" *ngIf="runtime">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  {{ runtime }}
+                </span> -->
+                
+                <span class="meta-item status-badge" [attr.data-status]="series.status.toLowerCase()">
+                  {{ series.status }}
+                </span>
+              </div>
+
+              <!-- Rating -->
+              <div class="series-rating" *ngIf="series.vote_average">
+                <div class="rating-circle">
+                  <svg class="rating-progress" viewBox="0 0 36 36">
+                    <path
+                      class="circle-bg"
+                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    />
+                    <path
+                      class="circle-progress"
+                      [attr.stroke-dasharray]="ratingPercentage + ', 100'"
+                      [attr.data-rating]="ratingClass"
+                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    />
+                    <text x="18" y="20.35" class="rating-text">{{ ratingPercentage }}%</text>
+                  </svg>
+                </div>
+                <div class="rating-info">
+                  <div class="rating-score">{{ rating }}/10</div>
+                  <div class="rating-votes">{{ formatVoteCount(series.vote_count) }} avaliações</div>
+                </div>
+              </div>
+
+              <!-- Genres -->
+              <div class="series-genres" *ngIf="series.genres?.length">
+                <span class="genre-chip" *ngFor="let genre of series.genres?.slice(0, 4)">
+                  {{ genre }}
+                </span>
+              </div>
+
+              <!-- Overview -->
+              <div class="series-overview" *ngIf="series.overview">
+                <h3>Sinopse</h3>
+                <p [class.expanded]="showFullOverview">{{ series.overview }}</p>
+                <button 
+                  class="toggle-overview"
+                  *ngIf="series.overview.length > 300"
+                  (click)="toggleOverview()">
+                  {{ showFullOverview ? 'Ver menos' : 'Ver mais' }}
+                </button>
+              </div>
+
+              <!-- Credits Preview -->
+              <div class="credits-preview" *ngIf="directors.length || writers.length">
+                <div class="credit-item" *ngIf="directors.length">
+                  <span class="credit-role">Direção:</span>
+                  <span class="credit-names">{{ directors.join(', ') }}</span>
+                </div>
+                <div class="credit-item" *ngIf="writers.length">
+                  <span class="credit-role">Roteiro:</span>
+                  <span class="credit-names">{{ writers.join(', ') }}</span>
+                </div>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="series-actions">
+                <!-- <button 
+                  class="btn btn-primary action-btn"
+                  *ngIf="hasTrailer"
+                  (click)="onPlayTrailer()">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                  Assistir Trailer
+                </button> -->
+                
+                <button 
+                  class="btn btn-secondary action-btn"
+                  (click)="onAddToWatchlist()">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                  </svg>
+                  Favoritar
+                </button>
+                
+                <button 
+                  class="btn btn-outline action-btn"
+                  (click)="onShare()">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+                  </svg>
+                  Compartilhar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Details Tabs -->
+    <div class="series-tabs">
+      <div class="container">
+        <!-- Tab Navigation -->
+        <nav class="tab-nav" role="tablist">
+          <button 
+            class="tab-btn"
+            [class.active]="activeTab === 'details'"
+            (click)="setActiveTab('details')"
+            role="tab">
+            Detalhes
+          </button>
+          <button 
+            class="tab-btn"
+            [class.active]="activeTab === 'cast'"
+            (click)="setActiveTab('cast')"
+            role="tab"
+            *ngIf="series.credits?.cast?.length">
+            Elenco
+          </button>
+          <button 
+            class="tab-btn"
+            [class.active]="activeTab === 'videos'"
+            (click)="setActiveTab('videos')"
+            role="tab"
+            *ngIf="series.videos?.length">
+            Vídeos ({{ series.videos?.length }})
+          </button>
+          <button 
+            class="tab-btn"
+            [class.active]="activeTab === 'images'"
+            (click)="setActiveTab('images')"
+            role="tab"
+            *ngIf="hasImages">
+            Fotos
+          </button>
+          <button 
+            class="tab-btn"
+            [class.active]="activeTab === 'similar'"
+            (click)="setActiveTab('similar')"
+            role="tab"
+            *ngIf="series.similar_series?.length">
+            Similares
+          </button>
+        </nav>
+
+        <!-- Tab Content -->
+        <div class="tab-content">
+          <!-- Details Tab -->
+          <div class="tab-panel" *ngIf="activeTab === 'details'" role="tabpanel">
+            <div class="details-grid">
+              <!-- Production Info -->
+              <div class="production-info">
+                <h3>Informações de Produção</h3>
+                
+                <div class="info-list">
+                  <!-- <div class="info-item" *ngIf="series.budget">
+                    <span class="info-label">Orçamento:</span>
+                    <span class="info-value">{{ formatCurrency(series.budget) }}</span>
+                  </div>
+
+                  <div class="info-item" *ngIf="series.revenue">
+                    <span class="info-label">Bilheteria:</span>
+                    <span class="info-value">{{ formatCurrency(series.revenue) }}</span>
+                  </div> -->
+
+                  <div class="info-item" *ngIf="series.production_companies?.length">
+                    <span class="info-label">Produtoras:</span>
+                    <div class="info-value">
+                      <div class="company-list">
+                        <span *ngFor="let company of series.production_companies; let last = last">
+                          {{ company.name }}<span *ngIf="!last">, </span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="info-item" *ngIf="series.production_countries?.length">
+                    <span class="info-label">Países:</span>
+                    <div class="info-value">
+                      <span *ngFor="let country of series.production_countries; let last = last">
+                        {{ country.name }}<span *ngIf="!last">, </span>
+                      </span>
+                    </div>
+                  </div>
+
+                  <div class="info-item" *ngIf="series.spoken_languages?.length">
+                    <span class="info-label">Idiomas:</span>
+                    <div class="info-value">
+                      <span *ngFor="let language of series.spoken_languages; let last = last">
+                        {{ language.name }}<span *ngIf="!last">, </span>
+                      </span>
+                    </div>
+                  </div>
+
+                  <div class="info-item" *ngIf="series.homepage">
+                    <span class="info-label">Site oficial:</span>
+                    <a [href]="series.homepage" target="_blank" rel="noopener" class="info-link">
+                      Visitar site
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Collection Info -->
+              <!-- <div class="collection-info" *ngIf="series.belongs_to_collection">
+                <h3>Faz parte da coleção</h3>
+                <div class="collection-card" (click)="viewCollection(series.belongs_to_collection!)">
+                  <img 
+                    [src]="getCollectionPoster(series.belongs_to_collection!)"
+                    [alt]="series.belongs_to_collection!.name"
+                    class="collection-poster">
+                  <div class="collection-info">
+                    <h4>{{ series.belongs_to_collection!.name }}</h4>
+                    <span class="collection-link">Ver coleção completa</span>
+                  </div>
+                </div>
+              </div> -->
+            </div>
+          </div>
+
+          <!-- Cast Tab -->
+          <div class="tab-panel" *ngIf="activeTab === 'cast'" role="tabpanel">
+            <div class="cast-grid">
+              <div class="cast-member" *ngFor="let member of mainCast" (click)="viewPerson(member.id)">
+                <div class="cast-photo">
+                  <img 
+                    [src]="member.profile_url || '/assets/placeholder-person.jpg'"
+                    [alt]="member.name"
+                    onerror="this.src='/assets/placeholder-person.jpg'">
+                </div>
+                <div class="cast-info">
+                  <h4 class="cast-name">{{ member.name }}</h4>
+                  <p class="cast-character">{{ member.character }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Videos Tab -->
+          <!-- <div class="tab-panel" *ngIf="activeTab === 'videos'" role="tabpanel">
+            <div class="videos-grid">
+              <div class="video-item" *ngFor="let video of series.videos">
+                <div class="video-thumbnail" (click)="playVideo(video)">
+                  <img 
+                    [src]="getYoutubeThumbnail(video.key)"
+                    [alt]="video.name"
+                    class="video-thumb">
+                  <div class="play-overlay">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M8 5v14l11-7z"/>
+                    </svg>
+                  </div>
+                </div>
+                <div class="video-info">
+                  <h4 class="video-title">{{ video.name }}</h4>
+                  <span class="video-type">{{ getVideoTypeLabel(video.type) }}</span>
+                </div>
+              </div>
+            </div>
+          </div> -->
+
+          <!-- Images Tab -->
+          <div class="tab-panel" *ngIf="activeTab === 'images'" role="tabpanel">
+            <div class="images-section">
+              <div class="image-category" *ngIf="series.images?.backdrops?.length">
+                <h3>Imagens de fundo</h3>
+                <div class="images-grid">
+                  <div 
+                    class="image-item backdrop-item"
+                    *ngFor="let image of series.images?.backdrops?.slice(0, 12)"
+                    (click)="openLightbox(image.url)">
+                    <img [src]="image.url" [alt]="series.name">
+                    <div class="image-overlay">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="image-category" *ngIf="series.images?.posters?.length">
+                <h3>Pôsteres</h3>
+                <div class="images-grid posters-grid">
+                  <div 
+                    class="image-item poster-item"
+                    *ngFor="let image of series.images?.posters?.slice(0, 12)"
+                    (click)="openLightbox(image.url)">
+                    <img [src]="image.url" [alt]="series.name">
+                    <div class="image-overlay">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Similar Series Tab -->
+          <div class="tab-panel" *ngIf="activeTab === 'similar'" role="tabpanel">
+            <div class="similar-series-grid">
+              <div 
+                class="similar-series-item"
+                *ngFor="let similar of series.similar_series?.slice(0, 12)"
+                (click)="viewSeries(similar.id)">
+                <div class="similar-poster">
+                  <img 
+                    [src]="getSimilarSeriesPoster(similar)"
+                    [alt]="similar.name"
+                    onerror="this.src='/assets/placeholder-series.jpg'">
+                </div>
+                <div class="similar-info">
+                  <h4>{{ similar.name }}</h4>
+                  <div class="similar-meta">
+                    <span class="similar-year" *ngIf="similar.first_air_date">
+                      {{ getYear(similar.first_air_date) }}
+                    </span>
+                    <span class="similar-rating" *ngIf="similar.vote_average">
+                      {{ similar.vote_average.toFixed(1) }} ⭐
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

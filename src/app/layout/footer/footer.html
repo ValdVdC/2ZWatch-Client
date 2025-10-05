@@ -1,0 +1,71 @@
+<footer class="footer">
+  <div class="footer-container">
+    <div class="footer-content">
+      <!-- Brand section -->
+      <div class="footer-section">
+        <div class="footer-brand">
+          <h3 class="brand-title">ZWatch</h3>
+          <p class="brand-description">
+            Descubra filmes e séries incríveis. Explore o mundo do entretenimento 
+            com nossa plataforma completa de descoberta cinematográfica.
+          </p>
+        </div>
+      </div>
+
+      <!-- Quick links -->
+      <div class="footer-section">
+        <h4 class="section-title">Links Rápidos</h4>
+        <ul class="footer-links">
+          <li *ngFor="let link of quickLinks">
+            <a [href]="link.url" class="footer-link">{{ link.name }}</a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Social media -->
+      <div class="footer-section">
+        <h4 class="section-title">Redes Sociais</h4>
+        <div class="social-links">
+          <a 
+            *ngFor="let social of socialLinks" 
+            [href]="social.url" 
+            class="social-link"
+            [title]="social.name"
+            target="_blank">
+            <span class="social-icon" [class]="'icon-' + social.icon"></span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Newsletter -->
+      <div class="footer-section">
+        <h4 class="section-title">Newsletter</h4>
+        <p class="newsletter-text">Receba as últimas novidades e lançamentos</p>
+        <form class="newsletter-form">
+          <input 
+            type="email" 
+            placeholder="Seu e-mail" 
+            class="newsletter-input"
+            required>
+          <button type="submit" class="newsletter-button">
+            Inscrever
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Footer bottom -->
+    <div class="footer-bottom">
+      <div class="footer-bottom-content">
+        <p class="copyright">
+          © {{ currentYear }} ZWatch. Todos os direitos reservados.
+        </p>
+        <div class="footer-bottom-links">
+          <a href="#" class="bottom-link">Privacidade</a>
+          <a href="#" class="bottom-link">Termos</a>
+          <a href="#" class="bottom-link">Suporte</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>

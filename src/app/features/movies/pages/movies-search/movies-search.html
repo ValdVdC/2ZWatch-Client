@@ -1,0 +1,168 @@
+<!-- Page Header -->
+<div class="search-header">
+  <div class="container">
+    <div class="header-content">
+      <div class="breadcrumb">
+        <a routerLink="/" class="breadcrumb-link">Início</a>
+        <span class="breadcrumb-separator">›</span>
+        <a routerLink="/movies" class="breadcrumb-link">Filmes</a>
+        <span class="breadcrumb-separator">›</span>
+        <span class="breadcrumb-current">Busca</span>
+      </div>
+      
+      <h1 class="search-title">{{ searchTitle }}</h1>
+      
+      <div class="search-meta" *ngIf="paginationData">
+        <span class="results-count">
+          {{ paginationData.pagination.totalResults || 0 }} filmes encontrados
+        </span>
+        <span class="page-info" *ngIf="paginationData.pagination.totalPages && paginationData.pagination.totalPages > 1">
+          - Página {{ currentPage }} de {{ paginationData.pagination.totalPages }}
+        </span>
+      </div>
+    </div>
+    
+    <!-- Search Controls -->
+    <div class="search-controls">
+      <div class="search-input-container">
+        <app-search-bar
+          placeholder="Buscar filmes..."
+          [showFilters]="true"
+          [initialValue]="currentQuery"
+          (search)="onSearch($event)"
+          (filterToggle)="toggleFilters()">
+        </app-search-bar>
+      </div>
+      
+      <div class="view-controls">
+        <div class="view-mode-toggle">
+          <button 
+            class="view-btn"
+            [class.active]="viewMode === 'grid'"
+            (click)="onViewModeChange('grid')"
+            title="Visualização em grade">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+            </svg>
+          </button>
+          
+          <button 
+            class="view-btn"
+            [class.active]="viewMode === 'list'"
+            (click)="onViewModeChange('list')"
+            title="Visualização em lista">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+        
+        <select 
+          class="size-select"
+          [(ngModel)]="cardSize">
+          <option value="small">Pequeno</option>
+          <option value="medium">Médio</option>
+          <option value="large">Grande</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Filter Panel -->
+<app-movie-filter
+  [isOpen]="showFilters"
+  [genres]="genres"
+  [initialFilters]="currentFilters"
+  (filtersChange)="onFiltersChange($event)"
+  (clearFilters)="onClearFilters()"
+  (close)="toggleFilters()">
+</app-movie-filter>
+
+<!-- Active Filters Bar -->
+<div class="active-filters-bar" *ngIf="hasActiveFilters">
+  <div class="container">
+    <div class="filters-content">
+      <span class="filters-label">Filtros ativos:</span>
+      <div class="filter-tags">
+        <span class="filter-tag" *ngIf="currentFilters.genre">
+          {{ getGenreName(currentFilters.genre) }}
+          <button (click)="removeFilter('genre')" class="remove-filter">×</button>
+        </span>
+        <span class="filter-tag" *ngIf="currentFilters.year">
+          {{ currentFilters.year }}
+          <button (click)="removeFilter('year')" class="remove-filter">×</button>
+        </span>
+        <span class="filter-tag" *ngIf="currentFilters.minRating || currentFilters.maxRating">
+          Rating: {{ currentFilters.minRating || '0' }} - {{ currentFilters.maxRating || '10' }}
+          <button (click)="removeFilter('rating')" class="remove-filter">×</button>
+        </span>
+      </div>
+      <button class="clear-all-btn" (click)="onClearFilters()">
+        Limpar todos
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<main class="search-content">
+  <div class="container">
+    
+    <!-- Movie List -->
+    <app-movie-list
+      [movies]="movies"
+      [loading]="loading"
+      [error]="error"
+      [viewMode]="viewMode"
+      [cardSize]="cardSize"
+      [showGenres]="true"
+      [showPagination]="true"
+      [paginationData]="paginationData"
+      (movieClick)="onMovieClick($event)"
+      (addToWatchlist)="onAddToWatchlist($event)"
+      (pageChange)="onPageChange($event)"
+      (pageSizeChange)="onPageSizeChange($event)"
+      (viewModeChange)="onViewModeChange($event)">
+    </app-movie-list>
+    
+    <!-- No Results State -->
+    <div class="no-results" *ngIf="!loading && !hasResults && !error">
+      <div class="no-results-content">
+        <div class="no-results-icon">🔍</div>
+        <h3 class="no-results-title">Nenhum filme encontrado</h3>
+        <p class="no-results-message">
+          <span *ngIf="currentQuery">
+            Não encontramos filmes para "<strong>{{ currentQuery }}</strong>".
+          </span>
+          <span *ngIf="!currentQuery">
+            Nenhum filme corresponde aos filtros selecionados.
+          </span>
+        </p>
+        <div class="no-results-actions">
+          <button class="btn btn-primary" (click)="onSearch('')" *ngIf="currentQuery">
+            Ver todos os filmes
+          </button>
+          <button class="btn btn-secondary" (click)="onClearFilters()" *ngIf="hasActiveFilters">
+            Limpar filtros
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Quick Filters -->
+    <div class="quick-filters" *ngIf="!loading && hasResults">
+      <h3 class="quick-filters-title">Filtros rápidos:</h3>
+      <div class="quick-filter-buttons">
+        <button 
+          class="quick-filter-btn"
+          *ngFor="let genre of popularGenres"
+          [class.active]="currentFilters.genre === genre.id"
+          (click)="onFiltersChange({ genre: genre.id })">
+          {{ genre.name }}
+        </button>
+      </div>
+    </div>
+    
+  </div>
+</main>

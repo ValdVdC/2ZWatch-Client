@@ -1,0 +1,259 @@
+<!-- Hero Section -->
+<section id="hero" class="hero">
+  <div class="hero-background" *ngIf="currentHeroItem">
+    <img 
+      [src]="getImageUrl(currentHeroItem.backdrop_path)" 
+      [alt]="getTitle(currentHeroItem)"
+      class="hero-bg-image">
+    <div class="hero-overlay"></div>
+  </div>
+
+  <div class="hero-content">
+    <div class="container">
+      <div class="hero-text">
+        <h1 class="hero-title">
+          Descubra o Mundo do <br>
+          <span class="gradient-text">Cinema e TV</span>
+        </h1>
+        <p class="hero-description">
+          Explore milhares de filmes e séries, descubra novos favoritos 
+          e mergulhe no universo do entretenimento.
+        </p>
+        
+        <!-- Search Bar -->
+        <div class="hero-search">
+          <app-search-bar
+            placeholder="Buscar filmes, séries..."
+            (search)="onSearchSubmit($event)">
+          </app-search-bar>
+        </div>
+
+        <!-- Hero Navigation -->
+        <div class="hero-nav" *ngIf="heroItems.length > 1">
+          <button 
+            *ngFor="let item of heroItems; let i = index"
+            class="hero-nav-dot"
+            [class.active]="i === currentHeroIndex"
+            (click)="goToHeroItem(i)">
+          </button>
+        </div>
+      </div>
+
+      <!-- Featured Content Card -->
+      <div class="hero-featured" *ngIf="currentHeroItem">
+        <div class="featured-card">
+          <img 
+            [src]="getImageUrl(currentHeroItem.poster_path)"
+            [alt]="getTitle(currentHeroItem)"
+            class="featured-poster">
+          <div class="featured-info">
+            <h3 class="featured-title">{{ getTitle(currentHeroItem) }}</h3>
+            <div class="featured-meta">
+              <span class="rating">
+                ⭐ {{ getRating(currentHeroItem.vote_average) }}
+              </span>
+              <span class="type">{{ isMovie(currentHeroItem) ? 'Filme' : 'Série' }}</span>
+            </div>
+            <p class="featured-overview">{{ currentHeroItem.overview | truncate:120 }}</p>
+            <button class="btn btn-primary" (click)="onHeroClick()">Ver Detalhes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section id="features" class="features">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Por que escolher o ZWatch?</h2>
+      <p class="section-description">
+        A plataforma completa para descobrir e explorar o melhor do entretenimento
+      </p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card" *ngFor="let feature of features">
+        <div class="feature-icon">{{ feature.icon }}</div>
+        <h3 class="feature-title">{{ feature.title }}</h3>
+        <p class="feature-description">{{ feature.description }}</p>
+        <button class="feature-action">{{ feature.action }}</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Popular Movies Section -->
+<section id="popular" class="popular-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Filmes Populares</h2>
+      <button routerLink="/movies" class="btn btn-secondary">Ver Todos</button>
+    </div>
+
+    <div class="content-grid" *ngIf="!loadingMovies && popularMovies.length > 0">
+      <div class="content-card" *ngFor="let movie of popularMovies">
+        <div class="card-image">
+          <img 
+            [src]="getImageUrl(movie.poster_path)"
+            [alt]="movie.title"
+            loading="lazy">
+          <div class="card-overlay">
+            <button class="play-button" (click)="onCardClick(movie)">▶</button>
+          </div>
+        </div>
+        <div class="card-content">
+          <h4 class="card-title">{{ movie.title }}</h4>
+          <div class="card-meta">
+            <span class="rating">⭐ {{ getRating(movie.vote_average) }}</span>
+            <span class="year">{{ movie.release_date | date:'yyyy' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="loading-placeholder" *ngIf="loadingMovies">
+      <div class="placeholder-card" *ngFor="let item of [1,2,3,4,5,6,7,8]"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Popular Series Section -->
+<section class="popular-section series-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Séries em Alta</h2>
+      <button routerLink="/series" class="btn btn-secondary">Ver Todas</button>
+    </div>
+
+    <div class="content-grid" *ngIf="!loadingSeries && popularSeries.length > 0">
+      <div class="content-card" *ngFor="let series of popularSeries">
+        <div class="card-image">
+          <img 
+            [src]="getImageUrl(series.poster_path)"
+            [alt]="series.name"
+            loading="lazy">
+          <div class="card-overlay">
+            <button class="play-button" (click)="onCardClick(series)">▶</button>
+          </div>
+        </div>
+        <div class="card-content">
+          <h4 class="card-title">{{ series.name }}</h4>
+          <div class="card-meta">
+            <span class="rating">⭐ {{ getRating(series.vote_average) }}</span>
+            <span class="year">{{ series.first_air_date | date:'yyyy' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="loading-placeholder" *ngIf="loadingSeries">
+      <div class="placeholder-card" *ngFor="let item of [1,2,3,4,5,6,7,8]"></div>
+    </div>
+  </div>
+</section>
+
+<!-- About Section -->
+<section id="about" class="about">
+  <div class="container">
+    <div class="about-content">
+      <div class="about-text">
+        <h2 class="section-title">Sobre o ZWatch</h2>
+        <p class="about-description">
+          O ZWatch é sua porta de entrada para o mundo do entretenimento. 
+          Nossa plataforma oferece informações completas sobre filmes e séries, 
+          desde os clássicos atemporais até os lançamentos mais recentes.
+        </p>
+        <p class="about-description">
+          Com interface moderna e intuitiva, você pode descobrir novos conteúdos, 
+          ver avaliações da comunidade e encontrar exatamente o que procura 
+          através de nossa busca avançada e sistema de filtros.
+        </p>
+        <div class="about-stats">
+          <div class="stat">
+            <span class="stat-number">50K+</span>
+            <span class="stat-label">Filmes</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number">20K+</span>
+            <span class="stat-label">Séries</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number">1M+</span>
+            <span class="stat-label">Usuários</span>
+          </div>
+        </div>
+      </div>
+      <div class="about-image">
+        <div class="image-placeholder">
+          <div class="floating-card">
+            <span class="card-icon">🎬</span>
+            <span class="card-text">Cinema</span>
+          </div>
+          <div class="floating-card">
+            <span class="card-icon">📺</span>
+            <span class="card-text">Séries</span>
+          </div>
+          <div class="floating-card">
+            <span class="card-icon">⭐</span>
+            <span class="card-text">Avaliações</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact" class="contact">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Entre em Contato</h2>
+      <p class="section-description">
+        Tem alguma dúvida ou sugestão? Adoraríamos ouvir você!
+      </p>
+    </div>
+
+    <div class="contact-content">
+      <div class="contact-info">
+        <div class="contact-item">
+          <span class="contact-icon">📧</span>
+          <div>
+            <h4>Email</h4>
+            <p>contato@zwatch.com</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <span class="contact-icon">💬</span>
+          <div>
+            <h4>Redes Sociais</h4>
+            <p>@zwatch em todas as plataformas</p>
+          </div>
+        </div>
+        <div class="contact-item">
+          <span class="contact-icon">🌟</span>
+          <div>
+            <h4>Avalie-nos</h4>
+            <p>Deixe sua opinião e nos ajude a melhorar</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="contact-form">
+        <form class="form">
+          <div class="form-group">
+            <input type="text" placeholder="Seu nome" class="form-input">
+          </div>
+          <div class="form-group">
+            <input type="email" placeholder="Seu email" class="form-input">
+          </div>
+          <div class="form-group">
+            <textarea placeholder="Sua mensagem" rows="5" class="form-input"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary full-width">Enviar Mensagem</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>

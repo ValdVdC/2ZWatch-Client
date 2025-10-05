@@ -1,0 +1,156 @@
+<!-- List Header -->
+<div class="movie-list-header" *ngIf="hasMovies && !loading">
+  <div class="list-controls">
+    <div class="view-controls">
+      <button 
+        class="view-btn"
+        [class.active]="viewMode === 'grid'"
+        (click)="toggleViewMode()"
+        title="Visualização em grade">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+        </svg>
+      </button>
+      
+      <button 
+        class="view-btn"
+        [class.active]="viewMode === 'list'"
+        (click)="toggleViewMode()"
+        title="Visualização em lista">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="results-info" *ngIf="paginationData">
+      <span>
+        {{ movies.length }} de {{ paginationData.pagination.totalResults || 0 }} filmes
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- Loading State -->
+<div class="loading-container" *ngIf="loading">
+  <div class="loading-grid" [style.grid-template-columns]="gridColumns">
+    <div class="loading-card" *ngFor="let item of [1,2,3,4,5,6,7,8,9,10,11,12]">
+      <div class="loading-poster"></div>
+      <div class="loading-content">
+        <div class="loading-title"></div>
+        <div class="loading-meta"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Error State -->
+<div class="error-container" *ngIf="error && !loading">
+  <div class="error-content">
+    <div class="error-icon">😔</div>
+    <h3 class="error-title">Oops! Algo deu errado</h3>
+    <p class="error-message">{{ error }}</p>
+    <button class="btn btn-primary" (click)="onPageChange(1)">
+      Tentar novamente
+    </button>
+  </div>
+</div>
+
+<!-- Empty State -->
+<div class="empty-container" *ngIf="!hasMovies && !loading && !error">
+  <div class="empty-content">
+    <div class="empty-icon">🎬</div>
+    <h3 class="empty-title">Nenhum filme encontrado</h3>
+    <p class="empty-message">Tente ajustar seus filtros ou fazer uma nova busca</p>
+  </div>
+</div>
+
+<!-- Movies Grid/List -->
+<div class="movie-list-container" *ngIf="hasMovies && !loading">
+  <!-- Grid View -->
+  <div 
+    class="movie-grid" 
+    *ngIf="viewMode === 'grid'"
+    [style.grid-template-columns]="gridColumns">
+    <app-movie-card
+      *ngFor="let movie of movies; trackBy: trackByMovieId"
+      [movie]="movie"
+      [size]="cardSize"
+      [showGenres]="showGenres"
+      (movieClick)="onMovieClick($event)"
+      (addToWatchlist)="onAddToWatchlist($event)">
+    </app-movie-card>
+  </div>
+
+  <!-- List View -->
+  <div class="movie-list" *ngIf="viewMode === 'list'">
+    <div 
+      class="movie-list-item"
+      *ngFor="let movie of movies; trackBy: trackByMovieId"
+      (click)="onMovieClick(movie)">
+      
+      <div class="list-item-poster">
+        <img 
+          [src]="'https://image.tmdb.org/t/p/w185' + movie.poster_path"
+          [alt]="movie.title"
+          onerror="this.src='/assets/placeholder-movie.jpg'">
+      </div>
+
+      <div class="list-item-content">
+        <div class="list-item-header">
+          <h3 class="list-item-title">{{ movie.title }}</h3>
+          <div class="list-item-rating">
+            <span class="rating-value">{{ (movie.vote_average || 0).toFixed(1) }}</span>
+            <span class="rating-star">⭐</span>
+          </div>
+        </div>
+
+        <div class="list-item-meta">
+          <span class="release-year" *ngIf="movie.release_date">
+            {{ movie.release_date | date:'yyyy' }}
+          </span>
+          <span class="vote-count" *ngIf="movie.vote_count">
+            {{ movie.vote_count }} votos
+          </span>
+        </div>
+
+        <div class="list-item-genres" *ngIf="showGenres && movie.genres?.length">
+          <span 
+            class="genre-tag" 
+            *ngFor="let genre of movie.genres?.slice(0, 4)">
+            {{ genre }}
+          </span>
+        </div>
+
+        <p class="list-item-overview" *ngIf="movie.overview">
+          {{ movie.overview | truncate:200 }}
+        </p>
+
+        <div class="list-item-actions">
+          <button 
+            class="btn btn-primary btn-sm"
+            (click)="onMovieClick(movie); $event.stopPropagation()">
+            Ver Detalhes
+          </button>
+          <button 
+            class="btn btn-secondary btn-sm"
+            (click)="onAddToWatchlist(movie); $event.stopPropagation()">
+            + Lista
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Pagination -->
+<app-pagination
+  *ngIf="showPagination && paginationData && hasMovies && !loading"
+  [currentPage]="paginationData.pagination.currentPage"
+  [totalPages]="paginationData.pagination.totalPages || 1"
+  [showPageSize]="true"
+  [pageSizeOptions]="[12, 24, 48]"
+  [pageSize]="paginationData.pagination.pageSize || 20"
+  (pageChange)="onPageChange($event)"
+  (pageSizeChange)="onPageSizeChange($event)">
+</app-pagination>

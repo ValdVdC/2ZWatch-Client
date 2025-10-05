@@ -1,0 +1,131 @@
+<div class="filter-overlay" *ngIf="isOpen" (click)="onClose()"></div>
+
+<div class="filter-panel" [class.open]="isOpen">
+  <!-- Filter Header -->
+  <div class="filter-header">
+    <h3 class="filter-title">Filtros</h3>
+    <div class="filter-actions">
+      <button 
+        class="clear-btn"
+        *ngIf="hasActiveFilters"
+        (click)="onClearFilters()">
+        Limpar
+      </button>
+      <button class="close-btn" (click)="onClose()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Filter Form -->
+  <form [formGroup]="filterForm" class="filter-form">
+    <!-- Genre Filter -->
+    <div class="filter-group">
+      <label class="filter-label">Gênero</label>
+      <select formControlName="genre" class="filter-select">
+        <option value="">Todos os gêneros</option>
+        <option *ngFor="let genre of genres" [value]="genre.id">
+          {{ genre.name }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Year Filter -->
+    <div class="filter-group">
+      <label class="filter-label">Ano</label>
+      <select formControlName="year" class="filter-select">
+        <option value="">Qualquer ano</option>
+        <option *ngFor="let year of years" [value]="year">
+          {{ year }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Rating Range -->
+    <div class="filter-group">
+      <label class="filter-label">Avaliação</label>
+      <div class="rating-range">
+        <div class="range-input">
+          <label class="range-label">Mín:</label>
+          <select formControlName="minRating" class="filter-select small">
+            <option value="">-</option>
+            <option value="1">1.0</option>
+            <option value="2">2.0</option>
+            <option value="3">3.0</option>
+            <option value="4">4.0</option>
+            <option value="5">5.0</option>
+            <option value="6">6.0</option>
+            <option value="7">7.0</option>
+            <option value="8">8.0</option>
+            <option value="9">9.0</option>
+          </select>
+        </div>
+        <div class="range-separator">até</div>
+        <div class="range-input">
+          <label class="range-label">Máx:</label>
+          <select formControlName="maxRating" class="filter-select small">
+            <option value="">-</option>
+            <option value="2">2.0</option>
+            <option value="3">3.0</option>
+            <option value="4">4.0</option>
+            <option value="5">5.0</option>
+            <option value="6">6.0</option>
+            <option value="7">7.0</option>
+            <option value="8">8.0</option>
+            <option value="9">9.0</option>
+            <option value="10">10.0</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sort Options -->
+    <div class="filter-group">
+      <label class="filter-label">Ordenar por</label>
+      <div class="sort-controls">
+        <select formControlName="sortBy" class="filter-select">
+          <option *ngFor="let option of sortOptions" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+        <div class="sort-order">
+          <label class="radio-label">
+            <input type="radio" formControlName="sortOrder" value="desc">
+            <span class="radio-custom"></span>
+            Decrescente
+          </label>
+          <label class="radio-label">
+            <input type="radio" formControlName="sortOrder" value="asc">
+            <span class="radio-custom"></span>
+            Crescente
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Filters Summary -->
+    <div class="active-filters" *ngIf="hasActiveFilters">
+      <h4 class="active-title">Filtros Ativos:</h4>
+      <div class="filter-tags">
+        <span class="filter-tag" *ngIf="filterForm.get('genre')?.value">
+          {{ selectedGenreName }}
+        </span>
+        <span class="filter-tag" *ngIf="filterForm.get('year')?.value">
+          {{ filterForm.get('year')?.value }}
+        </span>
+        <span class="filter-tag" *ngIf="filterForm.get('minRating')?.value || filterForm.get('maxRating')?.value">
+          Avaliação: {{ filterForm.get('minRating')?.value || '0' }} - {{ filterForm.get('maxRating')?.value || '10' }}
+        </span>
+      </div>
+    </div>
+  </form>
+
+  <!-- Mobile Apply Button -->
+  <div class="mobile-actions">
+    <button class="btn btn-primary full-width" (click)="onClose()">
+      Aplicar Filtros
+    </button>
+  </div>
+</div>

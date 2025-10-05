@@ -1,0 +1,19 @@
+<div class="error-container">
+  <div 
+    *ngFor="let error of errors" 
+    class="error-message"
+    [class]="'error-' + error.type">
+    
+    <div class="error-content">
+      <span class="error-icon">{{ getErrorIcon(error.type) }}</span>
+      <span class="error-text">{{ error.message }}</span>
+    </div>
+    
+    <button 
+      class="error-close"
+      (click)="removeError(error.timestamp)"
+      title="Fechar">
+      ×
+    </button>
+  </div>
+</div>

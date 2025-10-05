@@ -1,0 +1,65 @@
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-container">
+      <!-- Logo -->
+      <div class="navbar-brand">
+        <a href="/" class="brand-link">
+          <span class="brand-text">2Z&Watch</span>
+        </a>
+      </div>
+
+      <!-- Mobile menu toggle -->
+      <button 
+        class="mobile-toggle"
+        (click)="toggleMenu()"
+        [class.active]="isMenuOpen">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+
+      <!-- Navigation menu -->
+      <div class="navbar-menu" [class.active]="isMenuOpen">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a routerLink="" (click)="scrollToSection('hero')" class="nav-link">Início</a>
+          </li>
+          <li class="nav-item">
+            <a routerLink="/movies" class="nav-link">Filmes</a>
+          </li>
+          <li class="nav-item">
+            <a routerLink="/series" class="nav-link">Séries</a>
+          </li>
+          <li class="nav-item">
+            <a routerLink="/movies/search" class="nav-link">Buscar</a>
+          </li>
+          <li class="nav-item">
+            <a (click)="scrollToSection('features')" class="nav-link">Recursos</a>
+          </li>
+          <li class="nav-item">
+            <a (click)="scrollToSection('popular')" class="nav-link">Popular</a>
+          </li>
+          <li class="nav-item">
+            <a (click)="scrollToSection('about')" class="nav-link">Sobre</a>
+          </li>
+          <li class="nav-item">
+            <a (click)="scrollToSection('contact')" class="nav-link">Contato</a>
+          </li>
+        </ul>
+
+        <!-- Theme toggle -->
+        <button 
+          class="theme-toggle"
+          (click)="toggleTheme()"
+          title="Alternar tema">
+          <svg class="theme-icon sun-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <svg class="theme-icon moon-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+</header>

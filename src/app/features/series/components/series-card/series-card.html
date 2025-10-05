@@ -1,0 +1,73 @@
+<div class="series-card" [class]="'series-card--' + size" (click)="onSeriesClick()">
+  <!-- Poster Image -->
+  <div class="series-card__image">
+    <div class="image-placeholder" *ngIf="!imageLoaded">
+      <div class="placeholder-content">
+        <span class="placeholder-icon">🎬</span>
+      </div>
+    </div>
+    
+    <img 
+      [src]="posterUrl"
+      [alt]="series.name"
+      class="poster-image"
+      [class.loaded]="imageLoaded"
+      (load)="onImageLoad()"
+      (error)="onImageError($event)"
+      loading="lazy">
+
+    <!-- Overlay with actions -->
+    <div class="series-card__overlay">
+      <div class="overlay-content">
+        <button 
+          class="action-btn play-btn"
+          title="Ver detalhes">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+        </button>
+        
+        <button 
+          class="action-btn watchlist-btn"
+          (click)="onAddToWatchlist($event)"
+          title="Adicionar à lista">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Rating Badge -->
+    <div class="rating-badge" [class]="ratingClass">
+      <span class="rating-value">{{ rating }}</span>
+      <span class="rating-star">⭐</span>
+    </div>
+  </div>
+
+  <!-- Series Info -->
+  <div class="series-card__content">
+    <h3 class="series-title" [title]="series.name">{{ series.name }}</h3>
+    
+    <div class="series-meta">
+      <span class="release-year" *ngIf="releaseYear">{{ releaseYear }}</span>
+      <span class="vote-count" *ngIf="series.vote_count">
+        {{ series.vote_count }} votos
+      </span>
+    </div>
+
+    <!-- Genres (optional) -->
+    <div class="series-genres" *ngIf="showGenres && series.genres?.length">
+      <span 
+        class="genre-tag" 
+        *ngFor="let genre of series.genres?.slice(0, 3)">
+        {{ genre }}
+      </span>
+    </div>
+
+    <!-- Overview (for large size) -->
+    <p class="series-overview" *ngIf="size === 'large' && series.overview">
+      {{ series.overview | truncate:120 }}
+    </p>
+  </div>
+</div>

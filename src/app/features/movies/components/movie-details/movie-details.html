@@ -1,0 +1,310 @@
+<!-- Loading State -->
+<div class="loading-container" *ngIf="loading">
+  <div class="loading-hero">
+    <div class="loading-backdrop"></div>
+    <div class="loading-content">
+      <div class="loading-poster"></div>
+      <div class="loading-info">
+        <div class="loading-title"></div>
+        <div class="loading-meta"></div>
+        <div class="loading-overview"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Error State -->
+<div class="error-container" *ngIf="error && !loading">
+  <div class="error-content">
+    <h2>Erro ao carregar filme</h2>
+    <p>{{ error }}</p>
+  </div>
+</div>
+
+<!-- Movie Details -->
+<div class="movie-details" *ngIf="movie && !loading">
+  <!-- Hero Section -->
+  <div class="movie-hero">
+    <!-- Backdrop -->
+    <div class="hero-backdrop" *ngIf="backdropUrl">
+      <img [src]="backdropUrl" [alt]="movie.title">
+      <div class="backdrop-overlay"></div>
+    </div>
+
+    <!-- Content -->
+    <div class="hero-content">
+      <div class="container">
+        <div class="hero-grid">
+          <!-- Poster -->
+          <div class="hero-poster">
+            <img [src]="posterUrl" [alt]="movie.title" class="poster-image">
+          </div>
+
+          <!-- Info -->
+          <div class="hero-info">
+            <h1 class="movie-title">{{ movie.title }}</h1>
+            <p class="movie-tagline" *ngIf="movie.tagline">{{ movie.tagline }}</p>
+
+            <!-- Meta Info -->
+            <div class="movie-meta">
+              <span class="release-year" *ngIf="releaseYear">{{ releaseYear }}</span>
+              <span class="runtime" *ngIf="runtime">{{ runtime }}</span>
+              <span class="status">{{ movie.status }}</span>
+            </div>
+
+            <!-- Rating -->
+            <div class="movie-rating">
+              <div class="rating-circle">
+                <svg class="rating-progress" viewBox="0 0 36 36">
+                  <path
+                    class="circle-bg"
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  />
+                  <path
+                    class="circle"
+                    [attr.stroke-dasharray]="ratingPercentage + ', 100'"
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  />
+                  <text x="18" y="20.35" class="rating-text">{{ ratingPercentage }}%</text>
+                </svg>
+              </div>
+              <div class="rating-info">
+                <div class="rating-score">{{ rating }}/10</div>
+                <div class="rating-votes">{{ movie.vote_count }} votos</div>
+              </div>
+            </div>
+
+            <!-- Genres -->
+            <div class="movie-genres" *ngIf="mainGenres.length">
+              <span class="genre" *ngFor="let genre of mainGenres">{{ genre }}</span>
+            </div>
+
+            <!-- Overview -->
+            <div class="movie-overview">
+              <p [class.expanded]="showFullOverview">
+                {{ movie.overview }}
+              </p>
+              <button 
+                class="toggle-overview"
+                *ngIf="movie.overview && movie.overview.length > 200"
+                (click)="toggleOverview()">
+                {{ showFullOverview ? 'Ver menos' : 'Ver mais' }}
+              </button>
+            </div>
+
+            <!-- Credits Preview -->
+            <div class="credits-preview" *ngIf="directors.length || writers.length">
+              <div class="credit-item" *ngIf="directors.length">
+                <span class="credit-role">Direção:</span>
+                <span class="credit-names">{{ directors.join(', ') }}</span>
+              </div>
+              <div class="credit-item" *ngIf="writers.length">
+                <span class="credit-role">Roteiro:</span>
+                <span class="credit-names">{{ writers.join(', ') }}</span>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="movie-actions">
+              <button 
+                class="btn btn-primary action-btn"
+                *ngIf="hasTrailer"
+                (click)="onPlayTrailer()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+                Trailer
+              </button>
+              
+              <button 
+                class="btn btn-secondary action-btn"
+                (click)="onAddToWatchlist()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                Lista
+              </button>
+              
+              <button 
+                class="btn btn-outline action-btn"
+                (click)="onShare()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+                </svg>
+                Compartilhar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Details Tabs -->
+  <div class="movie-tabs">
+    <div class="container">
+      <!-- Tab Navigation -->
+      <nav class="tab-nav">
+        <button 
+          class="tab-btn"
+          [class.active]="activeTab === 'overview'"
+          (click)="setActiveTab('overview')">
+          Sinopse
+        </button>
+        <button 
+          class="tab-btn"
+          [class.active]="activeTab === 'cast'"
+          (click)="setActiveTab('cast')">
+          Elenco
+        </button>
+        <button 
+          class="tab-btn"
+          [class.active]="activeTab === 'videos'"
+          (click)="setActiveTab('videos')"
+          *ngIf="movie.videos?.length">
+          Vídeos
+        </button>
+        <button 
+          class="tab-btn"
+          [class.active]="activeTab === 'images'"
+          (click)="setActiveTab('images')"
+          *ngIf="movie.images?.posters?.length || movie.images?.backdrops?.length">
+          Imagens
+        </button>
+      </nav>
+
+      <!-- Tab Content -->
+      <div class="tab-content">
+        <!-- Overview Tab -->
+        <div class="tab-panel" *ngIf="activeTab === 'overview'">
+          <div class="overview-grid">
+            <!-- Production Info -->
+            <div class="production-info">
+              <h3>Informações de Produção</h3>
+              
+              <div class="info-grid">
+                <div class="info-item" *ngIf="movie.production_companies?.length">
+                  <span class="info-label">Produtoras:</span>
+                  <div class="info-value">
+                    <span *ngFor="let company of movie.production_companies; let last = last">
+                      {{ company.name }}<span *ngIf="!last">, </span>
+                    </span>
+                  </div>
+                </div>
+
+                <div class="info-item" *ngIf="movie.production_countries?.length">
+                  <span class="info-label">Países:</span>
+                  <div class="info-value">
+                    <span *ngFor="let country of movie.production_countries; let last = last">
+                      {{ country.name }}<span *ngIf="!last">, </span>
+                    </span>
+                  </div>
+                </div>
+
+                <div class="info-item" *ngIf="budget">
+                  <span class="info-label">Orçamento:</span>
+                  <div class="info-value">{{ budget }}</div>
+                </div>
+
+                <div class="info-item" *ngIf="revenue">
+                  <span class="info-label">Receita:</span>
+                  <div class="info-value">{{ revenue }}</div>
+                </div>
+
+                <div class="info-item" *ngIf="movie.spoken_languages?.length">
+                  <span class="info-label">Idiomas:</span>
+                  <div class="info-value">
+                    <span *ngFor="let lang of movie.spoken_languages; let last = last">
+                      {{ lang.name }}<span *ngIf="!last">, </span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Similar Movies -->
+            <div class="similar-movies" *ngIf="movie.similar_movies?.length">
+              <h3>Filmes Similares</h3>
+              <div class="similar-grid">
+                <div 
+                  class="similar-item"
+                  *ngFor="let similar of movie.similar_movies?.slice(0, 6)">
+                  <img 
+                    [src]="getImageUrl(similar.poster_path, 'w185')"
+                    [alt]="similar.title">
+                  <div class="similar-info">
+                    <h4>{{ similar.title }}</h4>
+                    <span class="similar-rating">{{ (similar.vote_average || 0).toFixed(1) }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cast Tab -->
+        <div class="tab-panel" *ngIf="activeTab === 'cast'">
+          <div class="cast-grid" *ngIf="mainCast.length">
+            <div class="cast-member" *ngFor="let member of mainCast">
+              <div class="cast-photo">
+                <img 
+                  [src]="getImageUrl(member.profile_url, 'w185')"
+                  [alt]="member.name"
+                  onerror="this.src='/assets/placeholder-person.jpg'">
+              </div>
+              <div class="cast-info">
+                <h4 class="cast-name">{{ member.name }}</h4>
+                <p class="cast-character">{{ member.character }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Videos Tab -->
+        <div class="tab-panel" *ngIf="activeTab === 'videos'">
+          <div class="videos-grid" *ngIf="movie.videos?.length">
+            <div class="video-item" *ngFor="let video of movie.videos">
+              <div class="video-thumbnail">
+                <iframe
+                  [src]="video.url | safeUrl"
+                  [title]="video.name"
+                  frameborder="0"
+                  allowfullscreen>
+                </iframe>
+              </div>
+              <h4 class="video-title">{{ video.name }}</h4>
+              <span class="video-type">{{ video.type }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Images Tab -->
+        <div class="tab-panel" *ngIf="activeTab === 'images'">
+          <div class="images-section" *ngIf="movie.images">
+            <div class="image-category" *ngIf="movie.images.backdrops?.length">
+              <h3>Imagens de Fundo</h3>
+              <div class="images-grid">
+                <div 
+                  class="image-item"
+                  *ngFor="let image of movie.images.backdrops.slice(0, 8)">
+                  <img [src]="image.url" [alt]="movie.title">
+                </div>
+              </div>
+            </div>
+
+            <div class="image-category" *ngIf="movie.images.posters?.length">
+              <h3>Pôsteres</h3>
+              <div class="images-grid">
+                <div 
+                  class="image-item"
+                  *ngFor="let image of movie.images.posters.slice(0, 8)">
+                  <img [src]="image.url" [alt]="movie.title">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

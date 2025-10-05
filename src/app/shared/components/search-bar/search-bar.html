@@ -1,0 +1,42 @@
+<div class="search-bar" [class.focused]="isFocused">
+  <div class="search-input-wrapper">
+    <!-- Search icon -->
+    <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+    </svg>
+
+    <!-- Input field -->
+    <input 
+      type="text"
+      class="search-input"
+      [placeholder]="placeholder"
+      [formControl]="searchControl"
+      (focus)="onFocus()"
+      (blur)="onBlur()"
+      autocomplete="off">
+
+    <!-- Clear button -->
+    <button 
+      *ngIf="hasValue"
+      type="button"
+      class="clear-button"
+      (click)="onClear()"
+      title="Limpar busca">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+
+    <!-- Filter button -->
+    <button 
+      *ngIf="showFilters"
+      type="button"
+      class="filter-button"
+      (click)="onFilterClick()"
+      title="Filtros">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" />
+      </svg>
+    </button>
+  </div>
+</div>

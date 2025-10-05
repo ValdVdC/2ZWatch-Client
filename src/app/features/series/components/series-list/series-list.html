@@ -1,0 +1,156 @@
+<!-- List Header -->
+<div class="series-list-header" *ngIf="hasSeries && !loading">
+  <div class="list-controls">
+    <div class="view-controls">
+      <button 
+        class="view-btn"
+        [class.active]="viewMode === 'grid'"
+        (click)="toggleViewMode()"
+        title="Visualização em grade">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+        </svg>
+      </button>
+      
+      <button 
+        class="view-btn"
+        [class.active]="viewMode === 'list'"
+        (click)="toggleViewMode()"
+        title="Visualização em lista">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="results-info" *ngIf="paginationData">
+      <span>
+        {{ series.length }} de {{ paginationData.pagination.totalResults || 0 }} filmes
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- Loading State -->
+<div class="loading-container" *ngIf="loading">
+  <div class="loading-grid" [style.grid-template-columns]="gridColumns">
+    <div class="loading-card" *ngFor="let item of [1,2,3,4,5,6,7,8,9,10,11,12]">
+      <div class="loading-poster"></div>
+      <div class="loading-content">
+        <div class="loading-title"></div>
+        <div class="loading-meta"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Error State -->
+<div class="error-container" *ngIf="error && !loading">
+  <div class="error-content">
+    <div class="error-icon">😔</div>
+    <h3 class="error-title">Oops! Algo deu errado</h3>
+    <p class="error-message">{{ error }}</p>
+    <button class="btn btn-primary" (click)="onPageChange(1)">
+      Tentar novamente
+    </button>
+  </div>
+</div>
+
+<!-- Empty State -->
+<div class="empty-container" *ngIf="!hasSeries && !loading && !error">
+  <div class="empty-content">
+    <div class="empty-icon">🎬</div>
+    <h3 class="empty-title">Nenhum filme encontrado</h3>
+    <p class="empty-message">Tente ajustar seus filtros ou fazer uma nova busca</p>
+  </div>
+</div>
+
+<!-- Series Grid/List -->
+<div class="series-list-container" *ngIf="hasSeries && !loading">
+  <!-- Grid View -->
+  <div 
+    class="series-grid" 
+    *ngIf="viewMode === 'grid'"
+    [style.grid-template-columns]="gridColumns">
+    <app-series-card
+      *ngFor="let serie of series; trackBy: trackBySeriesId"
+      [series]="serie"
+      [size]="cardSize"
+      [showGenres]="showGenres"
+      (seriesClick)="onSeriesClick($event)"
+      (addToWatchlist)="onAddToWatchlist($event)">
+    </app-series-card>
+  </div>
+
+  <!-- List View -->
+  <div class="series-list" *ngIf="viewMode === 'list'">
+    <div 
+      class="series-list-item"
+      *ngFor="let serie of series; trackBy: trackBySeriesId"
+      (click)="onSeriesClick(serie)">
+      
+      <div class="list-item-poster">
+        <img 
+          [src]="'https://image.tmdb.org/t/p/w185' + serie.poster_path"
+          [alt]="serie.name"
+          onerror="this.src='/assets/placeholder-series.jpg'">
+      </div>
+
+      <div class="list-item-content">
+        <div class="list-item-header">
+          <h3 class="list-item-title">{{ serie.name }}</h3>
+          <div class="list-item-rating">
+            <span class="rating-value">{{ (serie.vote_average || 0).toFixed(1) }}</span>
+            <span class="rating-star">⭐</span>
+          </div>
+        </div>
+
+        <div class="list-item-meta">
+          <span class="release-year" *ngIf="serie.first_air_date">
+            {{ serie.first_air_date| date:'yyyy' }}
+          </span>
+          <span class="vote-count" *ngIf="serie.vote_count">
+            {{ serie.vote_count }} votos
+          </span>
+        </div>
+
+        <div class="list-item-genres" *ngIf="showGenres && serie.genres?.length">
+          <span 
+            class="genre-tag" 
+            *ngFor="let genre of serie.genres?.slice(0, 4)">
+            {{ genre }}
+          </span>
+        </div>
+
+        <p class="list-item-overview" *ngIf="serie.overview">
+          {{ serie.overview | truncate:200 }}
+        </p>
+
+        <div class="list-item-actions">
+          <button 
+            class="btn btn-primary btn-sm"
+            (click)="onSeriesClick(serie); $event.stopPropagation()">
+            Ver Detalhes
+          </button>
+          <button 
+            class="btn btn-secondary btn-sm"
+            (click)="onAddToWatchlist(serie); $event.stopPropagation()">
+            + Lista
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Pagination -->
+<app-pagination
+  *ngIf="showPagination && paginationData && hasSeries && !loading"
+  [currentPage]="paginationData.pagination.currentPage"
+  [totalPages]="paginationData.pagination.totalPages || 1"
+  [showPageSize]="true"
+  [pageSizeOptions]="[12, 24, 48]"
+  [pageSize]="paginationData.pagination.pageSize || 20"
+  (pageChange)="onPageChange($event)"
+  (pageSizeChange)="onPageSizeChange($event)">
+</app-pagination>

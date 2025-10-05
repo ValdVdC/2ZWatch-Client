@@ -1,0 +1,109 @@
+<div class="pagination-wrapper">
+  <!-- Page size selector -->
+  <div class="page-size-selector" *ngIf="showPageSize">
+    <label for="pageSize">Itens por página:</label>
+    <!-- (change)="onPageSizeChange(+$event.target.value)" abaixo????-->
+    <select 
+      id="pageSize" 
+      [value]="pageSize" 
+      class="page-size-select">
+      <option *ngFor="let size of pageSizeOptions" [value]="size">
+        {{ size }}
+      </option>
+    </select>
+  </div>
+
+  <!-- Pagination controls -->
+  <nav class="pagination" *ngIf="totalPages > 1">
+    <ul class="pagination-list">
+      <!-- First page -->
+      <li class="pagination-item">
+        <button 
+          class="pagination-button"
+          [disabled]="!canGoPrevious"
+          (click)="goToFirst()"
+          title="Primeira página">
+          ⟨⟨
+        </button>
+      </li>
+
+      <!-- Previous page -->
+      <li class="pagination-item">
+        <button 
+          class="pagination-button"
+          [disabled]="!canGoPrevious"
+          (click)="goToPrevious()"
+          title="Página anterior">
+          ⟨
+        </button>
+      </li>
+
+      <!-- Show first page if not in visible range -->
+      <li class="pagination-item" *ngIf="showFirstPage">
+        <button 
+          class="pagination-button"
+          (click)="goToPage(1)">
+          1
+        </button>
+      </li>
+
+      <!-- Show ellipsis if gap exists -->
+      <li class="pagination-item ellipsis" *ngIf="showFirstPage && visiblePages[0] > 2">
+        <span>...</span>
+      </li>
+
+      <!-- Visible page numbers -->
+      <li 
+        *ngFor="let page of visiblePages" 
+        class="pagination-item"
+        [class.active]="page === currentPage">
+        <button 
+          class="pagination-button"
+          (click)="goToPage(page)">
+          {{ page }}
+        </button>
+      </li>
+
+      <!-- Show ellipsis if gap exists -->
+      <li class="pagination-item ellipsis" *ngIf="showLastPage && visiblePages[visiblePages.length - 1] < totalPages - 1">
+        <span>...</span>
+      </li>
+
+      <!-- Show last page if not in visible range -->
+      <li class="pagination-item" *ngIf="showLastPage">
+        <button 
+          class="pagination-button"
+          (click)="goToPage(totalPages)">
+          {{ totalPages }}
+        </button>
+      </li>
+
+      <!-- Next page -->
+      <li class="pagination-item">
+        <button 
+          class="pagination-button"
+          [disabled]="!canGoNext"
+          (click)="goToNext()"
+          title="Próxima página">
+          ⟩
+        </button>
+      </li>
+
+      <!-- Last page -->
+      <li class="pagination-item">
+        <button 
+          class="pagination-button"
+          [disabled]="!canGoNext"
+          (click)="goToLast()"
+          title="Última página">
+          ⟩⟩
+        </button>
+      </li>
+    </ul>
+
+    <!-- Page info -->
+    <div class="pagination-info">
+      Página {{ currentPage }} de {{ totalPages }}
+    </div>
+  </nav>
+</div>

@@ -1,0 +1,344 @@
+.series-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 2px solid var(--border-color);
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 400px; /* Força altura mínima consistente */
+}
+
+.series-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  border-color: var(--primary-color);
+  border-width: 2px; /* Mantém a espessura da borda no hover */
+}
+
+/* Size variants */
+.series-card--small {
+  min-height: 320px;
+}
+
+.series-card--medium {
+  min-height: 400px;
+}
+
+.series-card--large {
+  min-height: 480px;
+}
+
+/* Image container - altura fixa */
+.series-card__image {
+  position: relative;
+  height: 280px; /* Altura fixa em vez de aspect-ratio */
+  overflow: hidden;
+  background: var(--bg-tertiary);
+  flex-shrink: 0;
+}
+
+.series-card--small .series-card__image {
+  height: 220px;
+}
+
+.series-card--medium .series-card__image {
+  height: 280px;
+}
+
+.series-card--large .series-card__image {
+  height: 360px;
+}
+
+.image-placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-tertiary);
+  z-index: 1;
+}
+
+.placeholder-content {
+  text-align: center;
+}
+
+.placeholder-icon {
+  font-size: 3rem;
+  opacity: 0.5;
+}
+
+.poster-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: all 0.3s ease;
+  opacity: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.poster-image.loaded {
+  opacity: 1;
+}
+
+.series-card:hover .poster-image {
+  transform: scale(1.05);
+}
+
+/* Overlay */
+.series-card__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.3s ease;
+  z-index: 3;
+}
+
+.series-card:hover .series-card__overlay {
+  opacity: 1;
+}
+
+.overlay-content {
+  display: flex;
+  gap: 1rem;
+}
+
+.action-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.action-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.play-btn {
+  background: var(--primary-color);
+  color: white;
+}
+
+.play-btn:hover {
+  background: var(--primary-hover);
+  transform: scale(1.1);
+}
+
+.watchlist-btn {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.watchlist-btn:hover {
+  background: var(--secondary-color);
+  color: white;
+  border-color: var(--secondary-color);
+  transform: scale(1.1);
+}
+
+/* Rating badge */
+.rating-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  z-index: 4;
+}
+
+.rating-excellent {
+  background: rgba(34, 197, 94, 0.9);
+}
+
+.rating-good {
+  background: rgba(245, 158, 11, 0.9);
+}
+
+.rating-average {
+  background: rgba(107, 114, 128, 0.9);
+}
+
+.rating-poor {
+  background: rgba(239, 68, 68, 0.9);
+}
+
+.rating-star {
+  font-size: 0.7rem;
+}
+
+/* Content - altura flexível */
+.series-card__content {
+  padding: 1rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 120px; /* Altura mínima para conteúdo */
+}
+
+.series-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 2.6rem; /* Altura fixa para 2 linhas */
+}
+
+.series-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  height: 1.2rem; /* Altura fixa */
+}
+
+.release-year {
+  font-weight: 500;
+}
+
+.vote-count {
+  opacity: 0.8;
+}
+
+/* Genres */
+.series-genres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+  min-height: 1.5rem; /* Altura mínima mesmo sem gêneros */
+}
+
+.genre-tag {
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+/* Overview */
+.series-overview {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin-top: auto;
+  display: -webkit-box;
+  line-clamp: 3;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Size-specific adjustments */
+.series-card--small .series-card__content {
+  padding: 0.75rem;
+  min-height: 100px;
+}
+
+.series-card--small .series-title {
+  font-size: 0.9rem;
+  line-clamp: 1;
+  -webkit-line-clamp: 1;
+  height: 1.3rem;
+}
+
+.series-card--small .series-meta {
+  font-size: 0.8rem;
+}
+
+.series-card--small .rating-badge {
+  top: 4px;
+  right: 4px;
+  padding: 2px 6px;
+  font-size: 0.7rem;
+}
+
+.series-card--large .series-card__content {
+  padding: 1.25rem;
+  min-height: 140px;
+}
+
+.series-card--large .series-title {
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+}
+
+.series-card--large .series-meta {
+  margin-bottom: 0.75rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .series-card--medium {
+    min-height: 350px;
+  }
+  
+  .series-card--large {
+    min-height: 420px;
+  }
+  
+  .series-card__image {
+    height: 240px;
+  }
+  
+  .series-card--medium .series-card__image {
+    height: 240px;
+  }
+  
+  .series-card--large .series-card__image {
+    height: 300px;
+  }
+  
+  .overlay-content {
+    gap: 0.5rem;
+  }
+  
+  .action-btn {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .action-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+}
