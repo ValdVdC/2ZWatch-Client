@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
   api: {
-    baseUrl: 'https://twozwatch-server.onrender.com/',
+    baseUrl: 'https://twozwatch-server.onrender.com/api',
     timeout: 15000
   },
   tmdb: {
