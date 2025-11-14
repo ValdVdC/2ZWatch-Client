@@ -59,7 +59,57 @@ export interface Season {
   name: string;
   overview: string;
   poster_path?: string;
+  poster_url?: string;
   season_number: number;
+  air_year?: number;
+}
+
+export interface SeasonDetails extends Season {
+  _id: string;
+  episodes: Episode[];
+  credits?: Credits;
+  videos?: Video[];
+}
+
+export interface Episode {
+  id: number;
+  name: string;
+  overview: string;
+  air_date: string;
+  episode_number: number;
+  season_number: number;
+  still_path?: string;
+  still_url?: string;
+  vote_average: number;
+  vote_count: number;
+  runtime?: number;
+  runtime_formatted?: string;
+  crew?: CrewMember[];
+  guest_stars?: GuestStar[];
+}
+
+export interface EpisodeDetails extends Episode {
+  production_code?: string;
+  credits?: Credits;
+  videos?: Video[];
+}
+
+export interface CrewMember {
+  id: number;
+  name: string;
+  job: string;
+  department?: string;
+  profile_path?: string;
+  profile_url?: string;
+}
+
+export interface GuestStar {
+  id: number;
+  name: string;
+  character: string;
+  order?: number;
+  profile_path?: string;
+  profile_url?: string;
 }
 
 export interface Network {

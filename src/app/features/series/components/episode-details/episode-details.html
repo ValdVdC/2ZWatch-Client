@@ -1,0 +1,128 @@
+<div class="episode-details-page">
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="loading">
+    <div class="loading-spinner"></div>
+    <p>Carregando episódio...</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-container" *ngIf="error && !loading">
+    <div class="error-content">
+      <div class="error-icon">😔</div>
+      <h2>Oops! Algo deu errado</h2>
+      <p>{{ error }}</p>
+      <div class="error-actions">
+        <button class="btn btn-primary" (click)="goBack()">Voltar</button>
+        <button class="btn btn-secondary" (click)="retry()">Tentar Novamente</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Episode Content -->
+  <div class="episode-content" *ngIf="episode && !loading">
+    <!-- Back Navigation - Floating Button -->
+    <div class="back-navigation">
+      <button class="back-btn" (click)="goBack()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        <span class="back-btn-text">Voltar à Temporada</span>
+      </button>
+    </div>
+
+    <!-- Episode Hero -->
+    <div class="episode-hero">
+      <div class="hero-still">
+        <img [src]="stillUrl" [alt]="episode.name">
+        <div class="still-overlay"></div>
+      </div>
+      
+      <div class="hero-content">
+        <div class="container">
+          <div class="episode-badge">
+            Temporada {{ episode.season_number }} • Episódio {{ episode.episode_number }}
+          </div>
+          <h1 class="episode-title">{{ episode.name }}</h1>
+          
+          <div class="episode-meta">
+            <span *ngIf="episode.air_date">{{ formatDate(episode.air_date) }}</span>
+            <span *ngIf="episode.runtime || episode.runtime_formatted">
+              {{ episode.runtime_formatted || formatRuntime(episode.runtime) }}
+            </span>
+            <span *ngIf="episode.vote_average" class="rating">
+              ⭐ {{ rating }} ({{ episode.vote_count }} votos)
+            </span>
+          </div>
+
+          <p class="episode-overview" *ngIf="episode.overview">
+            {{ episode.overview }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Episode Details -->
+    <div class="episode-details-section">
+      <div class="container">
+        <!-- Crew Section -->
+        <div class="details-grid">
+          <div class="crew-section" *ngIf="getDirectors().length || getWriters().length">
+            <h2>Equipe</h2>
+            
+            <div class="crew-list">
+              <div class="crew-item" *ngIf="getDirectors().length">
+                <h3>Direção</h3>
+                <div class="crew-members">
+                  <span *ngFor="let director of getDirectors()">
+                    {{ director.name }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="crew-item" *ngIf="getWriters().length">
+                <h3>Roteiro</h3>
+                <div class="crew-members">
+                  <span *ngFor="let writer of getWriters()">
+                    {{ writer.name }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Guest Stars Section -->
+          <div class="guest-stars-section" *ngIf="episode.guest_stars && episode.guest_stars.length">
+            <h2>Convidados Especiais</h2>
+            <div class="guest-stars-grid">
+              <div 
+                class="guest-card"
+                *ngFor="let guest of episode.guest_stars.slice(0, 8)">
+                <div class="guest-photo">
+                  <img 
+                    [src]="getProfileUrl(guest.profile_path)" 
+                    [alt]="guest.name"
+                    onerror="this.src='/assets/placeholder-person.png'">
+                </div>
+                <div class="guest-info">
+                  <h4>{{ guest.name }}</h4>
+                  <p>{{ guest.character }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Full Crew Section -->
+        <div class="full-crew-section" *ngIf="episode.crew && episode.crew.length > 2">
+          <h2>Equipe Completa</h2>
+          <div class="crew-table">
+            <div class="crew-row" *ngFor="let member of episode.crew">
+              <div class="crew-role">{{ member.job }}</div>
+              <div class="crew-name">{{ member.name }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

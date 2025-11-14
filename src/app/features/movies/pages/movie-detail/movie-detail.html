@@ -35,16 +35,14 @@
 
   <!-- Movie Content -->
   <div class="movie-content" *ngIf="movie && !loading">
-    <!-- Back Navigation -->
+    <!-- Back Navigation - Floating Button -->
     <div class="back-navigation">
-      <div class="container">
-        <button class="back-btn" (click)="goBack()">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-          Voltar
-        </button>
-      </div>
+      <button class="back-btn" (click)="goBack()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        <span class="back-btn-text">Voltar</span>
+      </button>
     </div>
 
     <!-- Hero Section -->
@@ -255,7 +253,7 @@
                     <span class="info-value">{{ formatCurrency(movie.revenue) }}</span>
                   </div>
 
-                  <div class="info-item" *ngIf="movie.production_companies?.length">
+                  <div class="info-item" *ngIf="movie.production_companies.length">
                     <span class="info-label">Produtoras:</span>
                     <div class="info-value">
                       <div class="company-list">
@@ -266,7 +264,7 @@
                     </div>
                   </div>
 
-                  <div class="info-item" *ngIf="movie.production_countries?.length">
+                  <div class="info-item" *ngIf="movie.production_countries.length">
                     <span class="info-label">Países:</span>
                     <div class="info-value">
                       <span *ngFor="let country of movie.production_countries; let last = last">
@@ -275,7 +273,7 @@
                     </div>
                   </div>
 
-                  <div class="info-item" *ngIf="movie.spoken_languages?.length">
+                  <div class="info-item" *ngIf="movie.spoken_languages.length">
                     <span class="info-label">Idiomas:</span>
                     <div class="info-value">
                       <span *ngFor="let language of movie.spoken_languages; let last = last">

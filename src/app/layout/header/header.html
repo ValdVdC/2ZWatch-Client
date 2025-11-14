@@ -1,64 +1,120 @@
 <header class="header">
-  <nav class="navbar">
-    <div class="navbar-container">
+  <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
+    <div class="container-fluid px-3 px-lg-4">
       <!-- Logo -->
-      <div class="navbar-brand">
-        <a href="/" class="brand-link">
-          <span class="brand-text">2Z&Watch</span>
-        </a>
-      </div>
+      <a href="/" class="navbar-brand d-flex align-items-center">
+        <span class="brand-text">2Z&Watch</span>
+      </a>
+
+      <!-- Theme toggle para mobile (antes do toggle) -->
+      <button 
+        class="btn btn-link theme-toggle-mobile d-lg-none order-lg-2 me-2"
+        (click)="toggleTheme()"
+        title="Alternar tema">
+        <svg class="theme-icon sun-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+        <svg class="theme-icon moon-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+        </svg>
+      </button>
 
       <!-- Mobile menu toggle -->
       <button 
-        class="mobile-toggle"
-        (click)="toggleMenu()"
-        [class.active]="isMenuOpen">
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+        (click)="toggleMenu()">
+        <span class="navbar-toggler-icon"></span>
       </button>
 
       <!-- Navigation menu -->
-      <div class="navbar-menu" [class.active]="isMenuOpen">
-        <ul class="navbar-nav">
+      <div class="collapse navbar-collapse" id="navbarNav" [class.show]="isMenuOpen">
+        <ul class="navbar-nav ms-auto align-items-lg-center">
           <li class="nav-item">
-            <a routerLink="" (click)="scrollToSection('hero')" class="nav-link">Início</a>
+            <a routerLink="" 
+               routerLinkActive="active" 
+               [routerLinkActiveOptions]="{exact: true}"
+               (click)="closeMenu(); scrollToSection('hero')" 
+               class="nav-link">
+              Início
+            </a>
           </li>
           <li class="nav-item">
-            <a routerLink="/movies" class="nav-link">Filmes</a>
+            <a routerLink="/movies" 
+               routerLinkActive="active"
+               (click)="closeMenu()" 
+               class="nav-link">
+              Filmes
+            </a>
           </li>
           <li class="nav-item">
-            <a routerLink="/series" class="nav-link">Séries</a>
+            <a routerLink="/series" 
+               routerLinkActive="active"
+               (click)="closeMenu()" 
+               class="nav-link">
+              Séries
+            </a>
           </li>
           <li class="nav-item">
-            <a routerLink="/movies/search" class="nav-link">Buscar</a>
+            <a routerLink="/explorer" 
+               routerLinkActive="active"
+               (click)="closeMenu()" 
+               class="nav-link">
+              <i class="bi bi-compass me-1"></i>Explorar
+            </a>
           </li>
-          <li class="nav-item">
+          
+          <!-- Dropdown para links extras -->
+          <li class="nav-item dropdown d-lg-none">
+            <a class="nav-link dropdown-toggle" 
+               href="#" 
+               role="button" 
+               data-bs-toggle="dropdown" 
+               aria-expanded="false">
+              Mais
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark">
+              <li><a (click)="closeMenu(); scrollToSection('features')" class="dropdown-item">Recursos</a></li>
+              <li><a (click)="closeMenu(); scrollToSection('popular')" class="dropdown-item">Popular</a></li>
+              <li><a (click)="closeMenu(); scrollToSection('about')" class="dropdown-item">Sobre</a></li>
+              <li><a (click)="closeMenu(); scrollToSection('contact')" class="dropdown-item">Contato</a></li>
+            </ul>
+          </li>
+
+          <!-- Links desktop (escondidos no mobile) -->
+          <li class="nav-item d-none d-lg-block">
             <a (click)="scrollToSection('features')" class="nav-link">Recursos</a>
           </li>
-          <li class="nav-item">
+          <li class="nav-item d-none d-lg-block">
             <a (click)="scrollToSection('popular')" class="nav-link">Popular</a>
           </li>
-          <li class="nav-item">
+          <li class="nav-item d-none d-lg-block">
             <a (click)="scrollToSection('about')" class="nav-link">Sobre</a>
           </li>
-          <li class="nav-item">
+          <li class="nav-item d-none d-lg-block">
             <a (click)="scrollToSection('contact')" class="nav-link">Contato</a>
           </li>
-        </ul>
 
-        <!-- Theme toggle -->
-        <button 
-          class="theme-toggle"
-          (click)="toggleTheme()"
-          title="Alternar tema">
-          <svg class="theme-icon sun-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-          </svg>
-          <svg class="theme-icon moon-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-          </svg>
-        </button>
+          <!-- Theme toggle para desktop -->
+          <li class="nav-item d-none d-lg-block ms-2">
+            <button 
+              class="btn btn-link theme-toggle-desktop"
+              (click)="toggleTheme()"
+              title="Alternar tema">
+              <svg class="theme-icon sun-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+              <svg class="theme-icon moon-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+              </svg>
+            </button>
+          </li>
+        </ul>
       </div>
     </div>
   </nav>

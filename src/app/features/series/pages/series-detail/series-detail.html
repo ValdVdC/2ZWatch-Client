@@ -35,16 +35,14 @@
 
   <!-- Series Content -->
   <div class="series-content" *ngIf="series && !loading">
-    <!-- Back Navigation -->
+    <!-- Back Navigation - Floating Button -->
     <div class="back-navigation">
-      <div class="container">
-        <button class="back-btn" (click)="goBack()">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-          Voltar
-        </button>
-      </div>
+      <button class="back-btn" (click)="goBack()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        <span class="back-btn-text">Voltar</span>
+      </button>
     </div>
 
     <!-- Hero Section -->
@@ -211,6 +209,14 @@
           </button>
           <button 
             class="tab-btn"
+            [class.active]="activeTab === 'seasons'"
+            (click)="setActiveTab('seasons')"
+            role="tab"
+            *ngIf="series.seasons.length">
+            Temporadas ({{ series.seasons.length }})
+          </button>
+          <button 
+            class="tab-btn"
             [class.active]="activeTab === 'videos'"
             (click)="setActiveTab('videos')"
             role="tab"
@@ -255,7 +261,7 @@
                     <span class="info-value">{{ formatCurrency(series.revenue) }}</span>
                   </div> -->
 
-                  <div class="info-item" *ngIf="series.production_companies?.length">
+                  <div class="info-item" *ngIf="series.production_companies.length">
                     <span class="info-label">Produtoras:</span>
                     <div class="info-value">
                       <div class="company-list">
@@ -266,7 +272,7 @@
                     </div>
                   </div>
 
-                  <div class="info-item" *ngIf="series.production_countries?.length">
+                  <div class="info-item" *ngIf="series.production_countries.length">
                     <span class="info-label">Países:</span>
                     <div class="info-value">
                       <span *ngFor="let country of series.production_countries; let last = last">
@@ -275,7 +281,7 @@
                     </div>
                   </div>
 
-                  <div class="info-item" *ngIf="series.spoken_languages?.length">
+                  <div class="info-item" *ngIf="series.spoken_languages.length">
                     <span class="info-label">Idiomas:</span>
                     <div class="info-value">
                       <span *ngFor="let language of series.spoken_languages; let last = last">
@@ -332,7 +338,7 @@
           </div>
 
           <!-- Videos Tab -->
-          <!-- <div class="tab-panel" *ngIf="activeTab === 'videos'" role="tabpanel">
+          <div class="tab-panel" *ngIf="activeTab === 'videos'" role="tabpanel">
             <div class="videos-grid">
               <div class="video-item" *ngFor="let video of series.videos">
                 <div class="video-thumbnail" (click)="playVideo(video)">
@@ -352,7 +358,7 @@
                 </div>
               </div>
             </div>
-          </div> -->
+          </div>
 
           <!-- Images Tab -->
           <div class="tab-panel" *ngIf="activeTab === 'images'" role="tabpanel">
@@ -417,6 +423,50 @@
                     <span class="similar-rating" *ngIf="similar.vote_average">
                       {{ similar.vote_average.toFixed(1) }} ⭐
                     </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Seasons Tab -->
+          <div class="tab-panel" *ngIf="activeTab === 'seasons'" role="tabpanel">
+            <div class="seasons-section">
+              <div class="seasons-header">
+                <h3>Todas as Temporadas</h3>
+                <p class="seasons-count">{{ series.number_of_seasons }} {{ series.number_of_seasons === 1 ? 'temporada' : 'temporadas' }} • {{ series.number_of_episodes }} episódios no total</p>
+              </div>
+              
+              <div class="seasons-list">
+                <div 
+                  class="season-card"
+                  *ngFor="let season of series.seasons"
+                  (click)="viewSeason(series.id, season.season_number)">
+                  <div class="season-poster">
+                    <img 
+                      [src]="getSeasonPoster(season)"
+                      [alt]="season.name"
+                      onerror="this.src='/assets/placeholder-series.jpg'">
+                  </div>
+                  <div class="season-info">
+                    <h4 class="season-title">{{ season.name }}</h4>
+                    <div class="season-meta">
+                      <span class="season-year" *ngIf="season.air_date">
+                        {{ getYear(season.air_date) }}
+                      </span>
+                      <span class="season-episodes">
+                        {{ season.episode_count }} {{ season.episode_count === 1 ? 'episódio' : 'episódios' }}
+                      </span>
+                    </div>
+                    <p class="season-overview" *ngIf="season.overview">
+                      {{ season.overview }}
+                    </p>
+                    <button class="btn-view-season">
+                      Ver episódios
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
                   </div>
                 </div>
               </div>

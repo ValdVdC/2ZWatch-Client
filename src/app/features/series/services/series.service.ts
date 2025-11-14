@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Series, SeriesDetail } from '../models/series.model';
+import { Series, SeriesDetail, SeasonDetails, EpisodeDetails } from '../models/series.model';
 import { PaginatedResponse, GenreResponse, SearchParams } from '../../../shared/models/common.model';
 import { ApiService } from '../../../core/services/api.service';
 
@@ -54,5 +54,13 @@ export class SeriesService {
 
   getSeriesKeywords(id: number): Observable<any[]> {
     return this.apiService.get<any[]>(`${this.endpoint}/${id}/keywords`);
+  }
+
+  getSeasonDetails(seriesId: number, seasonNumber: number): Observable<SeasonDetails> {
+    return this.apiService.get<SeasonDetails>(`${this.endpoint}/${seriesId}/season/${seasonNumber}`);
+  }
+
+  getEpisodeDetails(seriesId: number, seasonNumber: number, episodeNumber: number): Observable<EpisodeDetails> {
+    return this.apiService.get<EpisodeDetails>(`${this.endpoint}/${seriesId}/season/${seasonNumber}/episode/${episodeNumber}`);
   }
 }

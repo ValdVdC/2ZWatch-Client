@@ -16,48 +16,52 @@
         </div>
 
         <div class="hero-content">
-          <div class="container">
-            <div class="hero-info">
-              <div class="hero-meta">
-                <span class="hero-year" *ngIf="series.first_air_date">
-                  {{ getYear(series.first_air_date) }}
-                </span>
-                <span class="hero-rating" *ngIf="series.vote_average">
-                  {{ series.vote_average.toFixed(1) }} ⭐
-                </span>
-                <div class="hero-genres" *ngIf="series.genres?.length">
-                  <span *ngFor="let genre of series.genres?.slice(0, 3); let last = last">
-                    {{ genre }}<span *ngIf="!last"> • </span>
-                  </span>
+          <div class="container-fluid px-3 px-md-4 px-lg-5">
+            <div class="row">
+              <div class="col-12 col-lg-8 col-xl-7">
+                <div class="hero-info">
+                  <div class="hero-meta d-flex flex-wrap gap-2 gap-md-3 mb-3">
+                    <span class="hero-year" *ngIf="series.first_air_date">
+                      {{ getYear(series.first_air_date) }}
+                    </span>
+                    <span class="hero-rating" *ngIf="series.vote_average">
+                      {{ series.vote_average.toFixed(1) }} ⭐
+                    </span>
+                    <div class="hero-genres" *ngIf="series.genres?.length">
+                      <span *ngFor="let genre of series.genres?.slice(0, 3); let last = last">
+                        {{ genre }}<span *ngIf="!last"> • </span>
+                      </span>
+                    </div>
+                  </div>
+
+                  <h1 class="hero-title mb-3 mb-md-4">{{ series.name }}</h1>
+                  
+                  <p class="hero-description mb-4 d-none d-md-block" *ngIf="series.overview">
+                    {{ series.overview | slice:0:180 }}
+                    <span *ngIf="series.overview.length > 180">...</span>
+                  </p>
+
+                  <div class="hero-actions d-flex flex-column flex-sm-row gap-2 gap-md-3">
+                    <button 
+                      class="btn btn-primary hero-btn d-flex align-items-center justify-content-center gap-2"
+                      (click)="onSeriesClick(series)">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
+                      Ver Detalhes
+                    </button>
+
+                    <button 
+                      class="btn btn-outline-light hero-btn d-flex align-items-center justify-content-center gap-2"
+                      (click)="onAddToWatchlist(series)">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                      </svg>
+                      Favoritar
+                    </button>
+                  </div>
                 </div>
-              </div>
-
-              <h1 class="hero-title">{{ series.name }}</h1>
-              
-              <p class="hero-description" *ngIf="series.overview">
-                {{ series.overview | slice:0:180 }}
-                <span *ngIf="series.overview.length > 180">...</span>
-              </p>
-
-              <div class="hero-actions">
-                <button 
-                  class="btn btn-primary hero-btn"
-                  (click)="onSeriesClick(series)">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                  </svg>
-                  Ver Detalhes
-                </button>
-
-                <button 
-                  class="btn btn-secondary hero-btn"
-                  (click)="onAddToWatchlist(series)">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                  </svg>
-                  Favoritar
-                </button>
               </div>
             </div>
           </div>
@@ -67,52 +71,58 @@
 
     <!-- Slider Controls -->
     <div class="hero-controls" *ngIf="featuredSeries.length > 1">
-      <div class="container">
-        <div class="slider-indicators">
-          <button
-            *ngFor="let series of featuredSeries; let i = index"
-            class="indicator"
-            [class.active]="currentSlide === i"
-            (click)="setCurrentSlide(i)"
-            [attr.aria-label]="'Ir para slide ' + (i + 1)">
-          </button>
-        </div>
-        
-        <div class="slider-nav">
-          <button 
-            class="nav-btn prev"
-            (click)="previousSlide()">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
+      <div class="container-fluid px-3 px-md-4 px-lg-5">
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="slider-indicators d-flex gap-2">
+            <button
+              *ngFor="let series of featuredSeries; let i = index"
+              class="indicator"
+              [class.active]="currentSlide === i"
+              (click)="setCurrentSlide(i)"
+              [attr.aria-label]="'Ir para slide ' + (i + 1)">
+            </button>
+          </div>
           
-          <button 
-            class="nav-btn next"
-            (click)="nextSlide()">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
+          <div class="slider-nav d-flex gap-2">
+            <button 
+              class="btn btn-sm btn-outline-light nav-btn"
+              (click)="previousSlide()">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            
+            <button 
+              class="btn btn-sm btn-outline-light nav-btn"
+              (click)="nextSlide()">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Search Section -->
-  <section class="search-section">
+  <section class="search-section py-4 py-md-5">
     <div class="container">
-      <div class="search-content">
-        <h2 class="search-title">Encontre sua próxima série favorito</h2>
-        <p class="search-subtitle">Milhares de séries esperando para serem descobertos</p>
-        
-        <div class="search-wrapper">
-          <app-search-bar
-            placeholder="Digite o nome de uma série, ator ou diretor..."
-            [showFilters]="true"
-            (search)="onSearch($event)"
-            (filterToggle)="toggleFilters()">
-          </app-search-bar>
+      <div class="row justify-content-center">
+        <div class="col-12 col-lg-10 col-xl-8">
+          <div class="search-content text-center">
+            <h2 class="search-title h3 h2-md mb-2 mb-md-3">Encontre sua próxima série favorita</h2>
+            <p class="search-subtitle text-muted mb-4">Milhares de séries esperando para serem descobertas</p>
+            
+            <div class="search-wrapper">
+              <app-search-bar
+                placeholder="Digite o nome de uma série, ator ou diretor..."
+                [showFilters]="true"
+                (search)="onSearch($event)"
+                (filterToggle)="toggleFilters()">
+              </app-search-bar>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -133,11 +143,11 @@
     <div class="container">
       
       <!-- Popular Series Section -->
-      <section class="series-section popular-section">
-        <div class="section-header">
+      <section class="series-section popular-section mb-4 mb-md-5">
+        <div class="section-header d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-3 mb-md-4 gap-2">
           <div class="section-title-group">
-            <h2 class="section-title">Populares</h2>
-            <p class="section-subtitle">As séries mais assistidas do momento</p>
+            <h2 class="section-title h4 h3-md mb-1">Populares</h2>
+            <p class="section-subtitle small text-muted mb-0 d-none d-sm-block">As séries mais assistidas do momento</p>
           </div>
           <button 
             class="view-all-btn"
@@ -150,17 +160,22 @@
         </div>
 
         <!-- Loading State -->
-        <div class="series-loading" *ngIf="loadingPopular">
-          <div class="loading-card" *ngFor="let item of [1,2,3,4,5,6]"></div>
+        <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 row-cols-xl-6 g-2 g-md-3" *ngIf="loadingPopular">
+          <div class="col" *ngFor="let item of [1,2,3,4,5,6]">
+            <div class="loading-card placeholder-glow">
+              <div class="placeholder col-12" style="height: 300px; border-radius: 0.5rem;"></div>
+            </div>
+          </div>
         </div>
 
         <!-- Series Scroll -->
-        <div class="series-scroll" *ngIf="!loadingPopular && popularSeries.length">
-          <div class="scroll-container" #popularScrollContainer (scroll)="onScrollChange($event)">
+        <div class="series-scroll position-relative" *ngIf="!loadingPopular && popularSeries.length">
+          <div class="scroll-container d-flex gap-2 gap-md-3 overflow-auto pb-2" #popularScrollContainer (scroll)="onScrollChange($event)">
             <app-series-card
               *ngFor="let series of popularSeries; trackBy: trackBySeriesId"
               [series]="series"
               size="medium"
+              class="flex-shrink-0"
               (seriesClick)="onSeriesClick($event)"
               (addToWatchlist)="onAddToWatchlist($event)">
             </app-series-card>
@@ -168,7 +183,7 @@
           
           <!-- Scroll Navigation -->
           <button 
-            class="scroll-btn scroll-prev"
+            class="scroll-btn scroll-prev d-none d-md-flex"
             (click)="scrollLeft(popularScrollContainer)"
             [class.hidden]="!canScrollLeft(popularScrollContainer)"
             [disabled]="!canScrollLeft(popularScrollContainer)">
@@ -178,7 +193,7 @@
           </button>
           
           <button 
-            class="scroll-btn scroll-next"
+            class="scroll-btn scroll-next d-none d-md-flex"
             (click)="scrollRight(popularScrollContainer)"
             [class.hidden]="!canScrollRight(popularScrollContainer)"
             [disabled]="!canScrollRight(popularScrollContainer)">
@@ -190,11 +205,11 @@
       </section>
 
       <!-- Now Playing Section -->
-      <section class="series-section now-playing-section">
-        <div class="section-header">
+      <section class="series-section now-playing-section mb-4 mb-md-5">
+        <div class="section-header d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-3 mb-md-4 gap-2">
           <div class="section-title-group">
-            <h2 class="section-title">Em Cartaz</h2>
-            <p class="section-subtitle">Séries disponíveis</p>
+            <h2 class="section-title h4 h3-md mb-1">Em Cartaz</h2>
+            <p class="section-subtitle small text-muted mb-0 d-none d-sm-block">Séries disponíveis</p>
           </div>
           <button 
             class="view-all-btn"
@@ -207,17 +222,22 @@
         </div>
 
         <!-- Loading State -->
-        <div class="series-loading" *ngIf="loadingNowPlaying">
-          <div class="loading-card" *ngFor="let item of [1,2,3,4,5,6]"></div>
+        <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 row-cols-xl-6 g-2 g-md-3" *ngIf="loadingNowPlaying">
+          <div class="col" *ngFor="let item of [1,2,3,4,5,6]">
+            <div class="loading-card placeholder-glow">
+              <div class="placeholder col-12" style="height: 300px; border-radius: 0.5rem;"></div>
+            </div>
+          </div>
         </div>
 
         <!-- Series Scroll -->
-        <div class="series-scroll" *ngIf="!loadingNowPlaying && nowPlayingSeries.length">
-          <div class="scroll-container" #nowPlayingScrollContainer (scroll)="onScrollChange($event)">
+        <div class="series-scroll position-relative" *ngIf="!loadingNowPlaying && nowPlayingSeries.length">
+          <div class="scroll-container d-flex gap-2 gap-md-3 overflow-auto pb-2" #nowPlayingScrollContainer (scroll)="onScrollChange($event)">
             <app-series-card
               *ngFor="let series of nowPlayingSeries; trackBy: trackBySeriesId"
               [series]="series"
               size="medium"
+              class="flex-shrink-0"
               (seriesClick)="onSeriesClick($event)"
               (addToWatchlist)="onAddToWatchlist($event)">
             </app-series-card>
@@ -225,7 +245,7 @@
           
           <!-- Scroll Navigation -->
           <button 
-            class="scroll-btn scroll-prev"
+            class="scroll-btn scroll-prev d-none d-md-flex"
             (click)="scrollLeft(nowPlayingScrollContainer)"
             [class.hidden]="!canScrollLeft(nowPlayingScrollContainer)"
             [disabled]="!canScrollLeft(nowPlayingScrollContainer)">
@@ -235,7 +255,7 @@
           </button>
           
           <button 
-            class="scroll-btn scroll-next"
+            class="scroll-btn scroll-next d-none d-md-flex"
             (click)="scrollRight(nowPlayingScrollContainer)"
             [class.hidden]="!canScrollRight(nowPlayingScrollContainer)"
             [disabled]="!canScrollRight(nowPlayingScrollContainer)">
@@ -247,11 +267,11 @@
       </section>
 
       <!-- Upcoming Series Section -->
-      <section class="series-section upcoming-section">
-        <div class="section-header">
+      <section class="series-section upcoming-section mb-4 mb-md-5">
+        <div class="section-header d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-3 mb-md-4 gap-2">
           <div class="section-title-group">
-            <h2 class="section-title">Em Breve</h2>
-            <p class="section-subtitle">Próximos lançamentos imperdíveis</p>
+            <h2 class="section-title h4 h3-md mb-1">Em Breve</h2>
+            <p class="section-subtitle small text-muted mb-0 d-none d-sm-block">Próximos lançamentos imperdíveis</p>
           </div>
           <button 
             class="view-all-btn"
@@ -264,17 +284,22 @@
         </div>
 
         <!-- Loading State -->
-        <div class="series-loading" *ngIf="loadingUpcoming">
-          <div class="loading-card" *ngFor="let item of [1,2,3,4,5,6]"></div>
+        <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 row-cols-xl-6 g-2 g-md-3" *ngIf="loadingUpcoming">
+          <div class="col" *ngFor="let item of [1,2,3,4,5,6]">
+            <div class="loading-card placeholder-glow">
+              <div class="placeholder col-12" style="height: 300px; border-radius: 0.5rem;"></div>
+            </div>
+          </div>
         </div>
 
         <!-- Series Scroll -->
-        <div class="series-scroll" *ngIf="!loadingUpcoming && upcomingSeries.length">
-          <div class="scroll-container" #upcomingScrollContainer>
+        <div class="series-scroll position-relative" *ngIf="!loadingUpcoming && upcomingSeries.length">
+          <div class="scroll-container d-flex gap-2 gap-md-3 overflow-auto pb-2" #upcomingScrollContainer>
             <app-series-card
               *ngFor="let series of upcomingSeries; trackBy: trackBySeriesId"
               [series]="series"
               size="medium"
+              class="flex-shrink-0"
               (seriesClick)="onSeriesClick($event)"
               (addToWatchlist)="onAddToWatchlist($event)">
             </app-series-card>
@@ -282,18 +307,20 @@
           
           <!-- Scroll Navigation -->
           <button 
-            class="scroll-btn scroll-prev"
+            class="scroll-btn scroll-prev d-none d-md-flex"
             (click)="scrollLeft(upcomingScrollContainer)"
-            [class.hidden]="!canScrollLeft(upcomingScrollContainer)">
+            [class.hidden]="!canScrollLeft(upcomingScrollContainer)"
+            [disabled]="!canScrollLeft(upcomingScrollContainer)">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
           </button>
           
           <button 
-            class="scroll-btn scroll-next"
+            class="scroll-btn scroll-next d-none d-md-flex"
             (click)="scrollRight(upcomingScrollContainer)"
-            [class.hidden]="!canScrollRight(upcomingScrollContainer)">
+            [class.hidden]="!canScrollRight(upcomingScrollContainer)"
+            [disabled]="!canScrollRight(upcomingScrollContainer)">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
             </svg>
@@ -302,11 +329,11 @@
       </section>
 
       <!-- Top Rated Section -->
-      <section class="series-section top-rated-section">
-        <div class="section-header">
+      <section class="series-section top-rated-section mb-4 mb-md-5">
+        <div class="section-header d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-3 mb-md-4 gap-2">
           <div class="section-title-group">
-            <h2 class="section-title">Melhores Avaliados</h2>
-            <p class="section-subtitle">Séries com as melhores notas da crítica</p>
+            <h2 class="section-title h4 h3-md mb-1">Melhores Avaliadas</h2>
+            <p class="section-subtitle small text-muted mb-0 d-none d-sm-block">Séries com as melhores notas da crítica</p>
           </div>
           <button 
             class="view-all-btn"
@@ -319,17 +346,22 @@
         </div>
 
         <!-- Loading State -->
-        <div class="series-loading" *ngIf="loadingTopRated">
-          <div class="loading-card" *ngFor="let item of [1,2,3,4,5,6]"></div>
+        <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 row-cols-xl-6 g-2 g-md-3" *ngIf="loadingTopRated">
+          <div class="col" *ngFor="let item of [1,2,3,4,5,6]">
+            <div class="loading-card placeholder-glow">
+              <div class="placeholder col-12" style="height: 300px; border-radius: 0.5rem;"></div>
+            </div>
+          </div>
         </div>
 
         <!-- Series Scroll -->
-        <div class="series-scroll" *ngIf="!loadingTopRated && topRatedSeries.length">
-          <div class="scroll-container" #topRatedScrollContainer>
+        <div class="series-scroll position-relative" *ngIf="!loadingTopRated && topRatedSeries.length">
+          <div class="scroll-container d-flex gap-2 gap-md-3 overflow-auto pb-2" #topRatedScrollContainer>
             <app-series-card
               *ngFor="let series of topRatedSeries; trackBy: trackBySeriesId"
               [series]="series"
               size="medium"
+              class="flex-shrink-0"
               (seriesClick)="onSeriesClick($event)"
               (addToWatchlist)="onAddToWatchlist($event)">
             </app-series-card>
@@ -337,19 +369,21 @@
           
           <!-- Scroll Navigation -->
           <button 
-            class="scroll-btn scroll-prev"
+            class="scroll-btn scroll-prev d-none d-md-flex"
             (click)="scrollLeft(topRatedScrollContainer)"
-            [class.hidden]="!canScrollLeft(topRatedScrollContainer)">
+            [class.hidden]="!canScrollLeft(topRatedScrollContainer)"
+            [disabled]="!canScrollLeft(topRatedScrollContainer)">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
           </button>
           
           <button 
-            class="scroll-btn scroll-next"
+            class="scroll-btn scroll-next d-none d-md-flex"
             (click)="scrollRight(topRatedScrollContainer)"
-            [class.hidden]="!canScrollRight(topRatedScrollContainer)">
-            <svg xmlns="http://www.w3.js.org" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            [class.hidden]="!canScrollRight(topRatedScrollContainer)"
+            [disabled]="!canScrollRight(topRatedScrollContainer)">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
             </svg>
           </button>
@@ -385,7 +419,7 @@
       <!-- Empty State -->
       <div class="empty-state" *ngIf="!isLoading && !hasAnyContent">
         <div class="empty-content">
-          <div class="empty-icon">🎬</div>
+          <div class="empty-icon">📺</div>
           <h3 class="empty-title">Nenhuma série disponível</h3>
           <p class="empty-description">
             Não foi possível carregar as séries no momento. 

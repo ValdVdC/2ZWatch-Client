@@ -1,3 +1,13 @@
+/* Bootstrap overrides e customizações */
+:root {
+  --bs-font-sans-serif: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+/* Override Bootstrap text-muted para usar nossa variável de tema */
+.text-muted {
+  color: var(--text-secondary) !important;
+}
+
 /* Reset e base */
 * {
   margin: 0;
@@ -7,13 +17,28 @@
 
 html {
   scroll-behavior: smooth;
+  font-size: 16px;
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-family: var(--bs-font-sans-serif);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Mobile first - ajustes de fonte */
+@media (max-width: 576px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 1400px) {
+  html {
+    font-size: 18px;
+  }
 }
 
 /* Sistema de temas */
@@ -30,6 +55,7 @@ body {
   --bg-primary: #ffffff;
   --bg-primary-rgb: 255, 255, 255;
   --bg-secondary: #f8fafc;
+  --bg-secondary-rgb: 248, 250, 252;
   --bg-tertiary: #f1f5f9;
   --bg-quaternary: #e2e8f0;
   
@@ -63,6 +89,7 @@ body {
   --bg-primary: #0f172a;
   --bg-primary-rgb: 15, 23, 42;
   --bg-secondary: #1e293b;
+  --bg-secondary-rgb: 30, 41, 59;
   --bg-tertiary: #334155;
   --bg-quaternary: #475569;
   
@@ -86,11 +113,51 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Utility classes */
-.container {
-  max-width: 1200px;
+/* Utility classes - Complementando Bootstrap */
+.container-custom {
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 1rem;
+}
+
+@media (min-width: 576px) {
+  .container-custom {
+    padding: 0 1.5rem;
+  }
+}
+
+@media (min-width: 992px) {
+  .container-custom {
+    padding: 0 2rem;
+  }
+}
+
+/* Flexbox utilities extras */
+.flex-wrap-mobile {
+  flex-wrap: wrap;
+}
+
+@media (min-width: 768px) {
+  .flex-wrap-mobile {
+    flex-wrap: nowrap;
+  }
+}
+
+/* Spacing responsivo */
+.gap-responsive {
+  gap: 0.5rem;
+}
+
+@media (min-width: 576px) {
+  .gap-responsive {
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 992px) {
+  .gap-responsive {
+    gap: 1.5rem;
+  }
 }
 
 .text-center { text-align: center; }
@@ -127,27 +194,39 @@ body {
 .shadow-lg { box-shadow: var(--shadow-large); }
 .shadow-xl { box-shadow: var(--shadow-xl); }
 
-/* Typography */
+/* Typography responsivo */
 h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
   line-height: 1.2;
   margin-bottom: 0.5rem;
 }
 
-h1 { font-size: 2.5rem; }
-h2 { font-size: 2rem; }
-h3 { font-size: 1.75rem; }
-h4 { font-size: 1.5rem; }
-h5 { font-size: 1.25rem; }
-h6 { font-size: 1.125rem; }
+h1 { 
+  font-size: clamp(1.75rem, 5vw, 2.5rem);
+}
+h2 { 
+  font-size: clamp(1.5rem, 4vw, 2rem);
+}
+h3 { 
+  font-size: clamp(1.25rem, 3.5vw, 1.75rem);
+}
+h4 { 
+  font-size: clamp(1.125rem, 3vw, 1.5rem);
+}
+h5 { 
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+}
+h6 { 
+  font-size: clamp(0.9rem, 2vw, 1.125rem);
+}
 
-/* Buttons */
+/* Buttons com responsividade */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.75rem 1.5rem;
-  font-size: 0.9rem;
+  padding: 0.625rem 1.25rem;
+  font-size: 0.875rem;
   font-weight: 500;
   text-decoration: none;
   border: none;
@@ -155,6 +234,14 @@ h6 { font-size: 1.125rem; }
   cursor: pointer;
   transition: all 0.2s ease;
   gap: 0.5rem;
+  white-space: nowrap;
+}
+
+@media (min-width: 768px) {
+  .btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9rem;
+  }
 }
 
 .btn-primary {
@@ -165,12 +252,14 @@ h6 { font-size: 1.125rem; }
 .btn-primary:hover {
   background: var(--primary-hover);
   transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.3);
 }
 
 .btn-secondary {
   background: var(--bg-secondary);
   color: var(--text-primary);
   border: 1px solid var(--border-color);
+  gap: 0rem;
 }
 
 .btn-secondary:hover {
@@ -178,13 +267,168 @@ h6 { font-size: 1.125rem; }
   border-color: var(--primary-color);
 }
 
+/* Card responsivo base */
+.card-responsive {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  transition: all 0.3s ease;
+}
+
+@media (min-width: 768px) {
+  .card-responsive {
+    padding: 1.5rem;
+  }
+}
+
+.card-responsive:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+/* Grid responsivo de cards */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+@media (min-width: 576px) {
+  .cards-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .cards-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .cards-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+@media (min-width: 1400px) {
+  .cards-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
 /* Responsive */
 @media (max-width: 768px) {
-  .container {
+  .container-custom {
     padding: 0 1rem;
   }
+}
+
+/* Utilitários de visibilidade responsiva */
+.mobile-only {
+  display: block;
+}
+
+.desktop-only {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .mobile-only {
+    display: none;
+  }
   
-  h1 { font-size: 2rem; }
-  h2 { font-size: 1.75rem; }
-  h3 { font-size: 1.5rem; }
+  .desktop-only {
+    display: block;
+  }
+}
+
+/* Imagens responsivas */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Aspect ratio para posters */
+.poster-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 150%; /* 2:3 aspect ratio */
+  overflow: hidden;
+  border-radius: 0.5rem;
+  background: var(--bg-tertiary);
+}
+
+.poster-container img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Aspect ratio para backdrop */
+.backdrop-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: var(--bg-tertiary);
+}
+
+.backdrop-container img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Scrollbar customizado */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* Touch targets para mobile */
+@media (max-width: 768px) {
+  button, a, .btn {
+    min-height: 24px;
+    min-width: 24px;
+  }
+}
+
+/* Prevent text selection on buttons */
+button, .btn {
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Focus styles acessíveis */
+button:focus-visible, 
+a:focus-visible, 
+input:focus-visible, 
+select:focus-visible, 
+textarea:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
 }

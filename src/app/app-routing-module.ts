@@ -1,11 +1,16 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { Home } from './pages/home/home';
+import { Explorer } from './pages/explorer/explorer';
 
 const routes: Routes = [
   {
     path: '',
     component:Home
+  },
+  {
+    path: 'explorer',
+    component: Explorer
   },
   {
     path: 'movies',
@@ -18,7 +23,11 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, {
+    scrollPositionRestoration: 'top',
+    anchorScrolling: 'enabled'
+  })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
+

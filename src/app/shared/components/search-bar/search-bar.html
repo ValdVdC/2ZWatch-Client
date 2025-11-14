@@ -1,42 +1,104 @@
-<div class="search-bar" [class.focused]="isFocused">
-  <div class="search-input-wrapper">
-    <!-- Search icon -->
-    <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-    </svg>
-
-    <!-- Input field -->
-    <input 
-      type="text"
-      class="search-input"
-      [placeholder]="placeholder"
-      [formControl]="searchControl"
-      (focus)="onFocus()"
-      (blur)="onBlur()"
-      autocomplete="off">
-
-    <!-- Clear button -->
-    <button 
-      *ngIf="hasValue"
-      type="button"
-      class="clear-button"
-      (click)="onClear()"
-      title="Limpar busca">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+<div class="search-bar-container" [class.focused]="isFocused">
+  <div class="search-bar">
+    <div class="search-input-wrapper">
+      <!-- Search icon -->
+      <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
       </svg>
-    </button>
 
-    <!-- Filter button -->
-    <button 
-      *ngIf="showFilters"
-      type="button"
-      class="filter-button"
-      (click)="onFilterClick()"
-      title="Filtros">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" />
-      </svg>
-    </button>
+      <!-- Input field -->
+      <input 
+        type="text"
+        class="search-input"
+        [placeholder]="placeholder"
+        [formControl]="searchControl"
+        (focus)="onFocus()"
+        (blur)="onBlur()"
+        (keydown.enter)="onSearchSubmit()"
+        autocomplete="off">
+
+      <!-- Clear button -->
+      <button 
+        *ngIf="hasValue"
+        type="button"
+        class="clear-button"
+        (click)="onClear()"
+        title="Limpar busca">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+
+      <!-- Filter button -->
+      <button 
+        *ngIf="showFilters"
+        type="button"
+        class="filter-button"
+        (click)="onFilterClick()"
+        title="Filtros">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Suggestions Dropdown -->
+  <div class="search-dropdown" *ngIf="showDropdown && (showHistorySection || showSuggestionsSection)">
+    <!-- Search History -->
+    <div class="dropdown-section" *ngIf="showHistorySection">
+      <div class="section-header">
+        <span class="section-title">
+          <i class="bi bi-clock-history"></i> Buscas Recentes
+        </span>
+        <button class="clear-history-btn" (click)="clearHistory()" title="Limpar histórico">
+          <i class="bi bi-trash"></i>
+        </button>
+      </div>
+      <div class="history-list">
+        <div 
+          class="history-item"
+          *ngFor="let term of searchHistory"
+          (click)="onHistoryItemClick(term)">
+          <i class="bi bi-search"></i>
+          <span class="history-text">{{ term }}</span>
+          <button class="remove-history-btn" (click)="removeHistoryItem(term, $event)">
+            <i class="bi bi-x"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Suggestions -->
+    <div class="dropdown-section" *ngIf="showSuggestionsSection">
+      <div class="section-header">
+        <span class="section-title">
+          <i class="bi bi-lightbulb"></i> Sugestões
+        </span>
+      </div>
+      <div class="suggestions-list">
+        <div 
+          class="suggestion-item"
+          *ngFor="let suggestion of suggestions"
+          (click)="onSuggestionClick(suggestion)">
+          <div class="suggestion-poster" *ngIf="suggestion.poster">
+            <img [src]="suggestion.poster" [alt]="suggestion.title" loading="lazy">
+          </div>
+          <div class="suggestion-poster placeholder" *ngIf="!suggestion.poster">
+            <i class="bi bi-film"></i>
+          </div>
+          <div class="suggestion-info">
+            <div class="suggestion-title">{{ suggestion.title }}</div>
+            <div class="suggestion-meta">
+              <span class="suggestion-type">
+                <i class="bi" [ngClass]="suggestion.type === 'movie' ? 'bi-camera-reels' : 'bi-tv'"></i>
+                {{ suggestion.type === 'movie' ? 'Filme' : 'Série' }}
+              </span>
+              <span class="suggestion-year" *ngIf="suggestion.year">{{ suggestion.year }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

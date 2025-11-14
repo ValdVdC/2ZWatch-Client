@@ -1,11 +1,11 @@
-<footer class="footer">
-  <div class="footer-container">
-    <div class="footer-content">
+<footer class="footer py-5">
+  <div class="container">
+    <div class="row g-4">
       <!-- Brand section -->
-      <div class="footer-section">
-        <div class="footer-brand">
-          <h3 class="brand-title">ZWatch</h3>
-          <p class="brand-description">
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="footer-section">
+          <h3 class="brand-title h4 mb-3">2Z&Watch</h3>
+          <p class="brand-description text-muted mb-3">
             Descubra filmes e séries incríveis. Explore o mundo do entretenimento 
             com nossa plataforma completa de descoberta cinematográfica.
           </p>
@@ -13,57 +13,70 @@
       </div>
 
       <!-- Quick links -->
-      <div class="footer-section">
-        <h4 class="section-title">Links Rápidos</h4>
-        <ul class="footer-links">
-          <li *ngFor="let link of quickLinks">
-            <a [href]="link.url" class="footer-link">{{ link.name }}</a>
-          </li>
-        </ul>
+      <div class="col-6 col-md-6 col-lg-2">
+        <div class="footer-section">
+          <h4 class="section-title h6 mb-3">Links Rápidos</h4>
+          <ul class="footer-links list-unstyled">
+            <li class="mb-2" *ngFor="let link of quickLinks">
+              <a [href]="link.url" class="footer-link text-muted text-decoration-none">{{ link.name }}</a>
+            </li>
+          </ul>
+        </div>
       </div>
 
       <!-- Social media -->
-      <div class="footer-section">
-        <h4 class="section-title">Redes Sociais</h4>
-        <div class="social-links">
-          <a 
-            *ngFor="let social of socialLinks" 
-            [href]="social.url" 
-            class="social-link"
-            [title]="social.name"
-            target="_blank">
-            <span class="social-icon" [class]="'icon-' + social.icon"></span>
-          </a>
+      <div class="col-6 col-md-6 col-lg-2">
+        <div class="footer-section">
+          <h4 class="section-title h6 mb-3">Redes Sociais</h4>
+          <div class="social-links d-flex gap-2 flex-wrap">
+            <a 
+              *ngFor="let social of socialLinks" 
+              [href]="social.url" 
+              class="social-link btn btn-outline-primary btn-sm"
+              [title]="social.name"
+              target="_blank"
+              rel="noopener noreferrer">
+              <i [class]="'bi bi-' + social.icon"></i>
+            </a>
+          </div>
         </div>
       </div>
 
       <!-- Newsletter -->
-      <div class="footer-section">
-        <h4 class="section-title">Newsletter</h4>
-        <p class="newsletter-text">Receba as últimas novidades e lançamentos</p>
-        <form class="newsletter-form">
-          <input 
-            type="email" 
-            placeholder="Seu e-mail" 
-            class="newsletter-input"
-            required>
-          <button type="submit" class="newsletter-button">
-            Inscrever
-          </button>
-        </form>
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="footer-section">
+          <h4 class="section-title h6 mb-3">Newsletter</h4>
+          <p class="newsletter-text text-muted small mb-3">Receba as últimas novidades e lançamentos</p>
+          <form class="newsletter-form">
+            <div class="input-group">
+              <input 
+                type="email" 
+                placeholder="Seu e-mail" 
+                class="form-control"
+                required>
+              <button type="submit" class="btn btn-primary">
+                Inscrever
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
 
     <!-- Footer bottom -->
-    <div class="footer-bottom">
-      <div class="footer-bottom-content">
-        <p class="copyright">
-          © {{ currentYear }} ZWatch. Todos os direitos reservados.
-        </p>
-        <div class="footer-bottom-links">
-          <a href="#" class="bottom-link">Privacidade</a>
-          <a href="#" class="bottom-link">Termos</a>
-          <a href="#" class="bottom-link">Suporte</a>
+    <div class="footer-bottom border-top mt-4 pt-4">
+      <div class="row align-items-center">
+        <div class="col-12 col-md-6 text-center text-md-start mb-3 mb-md-0">
+          <p class="copyright mb-0 text-muted small">
+            © {{ currentYear }} 2ZWatch. Todos os direitos reservados.
+          </p>
+        </div>
+        <div class="col-12 col-md-6">
+          <div class="footer-bottom-links d-flex gap-3 justify-content-center justify-content-md-end">
+            <a href="#" class="bottom-link text-muted text-decoration-none small">Privacidade</a>
+            <a href="#" class="bottom-link text-muted text-decoration-none small">Termos</a>
+            <a href="#" class="bottom-link text-muted text-decoration-none small">Suporte</a>
+          </div>
         </div>
       </div>
     </div>

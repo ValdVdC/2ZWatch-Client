@@ -44,8 +44,26 @@ export class SeriesSearch implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.loadGenres();
-    this.subscribeToQueryParams();
+    // Redirect to Explorer with series type
+    this.route.queryParams.subscribe(params => {
+      const queryParams: any = {
+        type: 'series'
+      };
+
+      // Preserve existing query parameters
+      if (params['q']) queryParams.q = params['q'];
+      if (params['genre']) queryParams.genre = params['genre'];
+      if (params['year']) queryParams.year = params['year'];
+      if (params['rating']) queryParams.rating = params['rating'];
+      if (params['sort']) queryParams.sort = params['sort'];
+      if (params['page']) queryParams.page = params['page'];
+
+      // Navigate to Explorer
+      this.router.navigate(['/explorer'], { 
+        queryParams,
+        replaceUrl: true // Replace history entry to avoid back button issues
+      });
+    });
   }
 
   ngOnDestroy(): void {

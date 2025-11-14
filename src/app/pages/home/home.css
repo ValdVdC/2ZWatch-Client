@@ -581,13 +581,18 @@
 .form-input {
   width: 100%;
   padding: 1rem;
-  border: 1px solid var(--border-color);
+  border: 2px solid var(--border-color);
   border-radius: 8px;
   background: var(--bg-secondary);
   color: var(--text-primary);
   font-size: 1rem;
   transition: all 0.3s ease;
-  resize: vertical;
+  resize: none; 
+} 
+
+.form-input::placeholder {
+  color: var(--text-secondary);
+  opacity: 25%;
 }
 
 .form-input:focus {

@@ -7,6 +7,7 @@ import { CoreModule } from './core/core.module';
 import { Header } from './layout/header/header';
 import { Footer } from './layout/footer/footer';
 import { Home } from './pages/home/home';
+import { Explorer } from './pages/explorer/explorer';
 import { SharedModule } from './shared/shared.module';
  
 @NgModule({
@@ -15,6 +16,7 @@ import { SharedModule } from './shared/shared.module';
     Header,
     Footer,
     Home,
+    Explorer,
   ],
   imports: [
     BrowserModule,
@@ -28,3 +30,4 @@ import { SharedModule } from './shared/shared.module';
   bootstrap: [App]
 })
 export class AppModule { }
+

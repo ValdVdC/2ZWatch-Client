@@ -11,6 +11,8 @@ import { SeriesCard } from './components/series-card/series-card';
 import { SeriesFilter } from './components/series-filter/series-filter';
 import { SeriesList } from './components/series-list/series-list';
 import { SeriesDetails } from './components/series-details/series-details';
+import { SeasonDetailsComponent } from './components/season-details/season-details';
+import { EpisodeDetailsComponent } from './components/episode-details/episode-details';
 
 // Páginas
 
@@ -37,6 +39,14 @@ const routes: Routes = [
     resolve: {
       series: SeriesDetailResolver
     }
+  },
+  {
+    path: ':id/season/:seasonNumber',
+    component: SeasonDetailsComponent
+  },
+  {
+    path: ':id/season/:seasonNumber/episode/:episodeNumber',
+    component: EpisodeDetailsComponent
   }
 ];
 
@@ -49,6 +59,8 @@ const routes: Routes = [
     SeriesHome,
     SeriesSearch,
     SeriesDetail,
+    SeasonDetailsComponent,
+    EpisodeDetailsComponent
   ],
   imports: [
     CommonModule,

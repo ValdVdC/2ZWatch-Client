@@ -1,0 +1,93 @@
+<div class="season-details-page">
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="loading">
+    <div class="loading-spinner"></div>
+    <p>Carregando temporada...</p>
+  </div>
+
+  <!-- Error State -->
+  <div class="error-container" *ngIf="error && !loading">
+    <div class="error-content">
+      <div class="error-icon">😔</div>
+      <h2>Oops! Algo deu errado</h2>
+      <p>{{ error }}</p>
+      <div class="error-actions">
+        <button class="btn btn-primary" (click)="goBack()">Voltar</button>
+        <button class="btn btn-secondary" (click)="retry()">Tentar Novamente</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Season Content -->
+  <div class="season-content" *ngIf="season && !loading">
+    <!-- Back Navigation - Floating Button -->
+    <div class="back-navigation">
+      <button class="back-btn" (click)="goBack()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        <span class="back-btn-text">Voltar</span>
+      </button>
+    </div>
+
+    <!-- Season Header -->
+    <div class="season-header">
+      <div class="container">
+        <div class="header-grid">
+          <div class="season-poster">
+            <img [src]="posterUrl" [alt]="season.name" onerror="this.src='/assets/placeholder-series.jpg'">
+          </div>
+          <div class="season-info">
+            <h1 class="season-title">{{ season.name }}</h1>
+            <div class="season-meta">
+              <span *ngIf="airYear">{{ airYear }}</span>
+              <span>{{ season.episode_count }} episódios</span>
+            </div>
+            <p class="season-overview" *ngIf="season.overview">{{ season.overview }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Episodes List -->
+    <div class="episodes-section">
+      <div class="container">
+        <h2 class="episodes-title">Episódios</h2>
+        <div class="episodes-list">
+          <div 
+            class="episode-card"
+            *ngFor="let episode of season.episodes"
+            (click)="viewEpisode(episode)">
+            <div class="episode-still">
+              <img 
+                [src]="getEpisodeStill(episode)" 
+                [alt]="episode.name"
+                onerror="this.src='/assets/placeholder-episode.jpg'">
+              <div class="episode-number-badge">
+                EP {{ episode.episode_number }}
+              </div>
+            </div>
+            <div class="episode-info">
+              <h3 class="episode-title">{{ episode.name }}</h3>
+              <div class="episode-meta">
+                <span *ngIf="episode.air_date">{{ formatDate(episode.air_date) }}</span>
+                <span *ngIf="episode.runtime || episode.runtime_formatted">
+                  {{ episode.runtime_formatted || formatRuntime(episode.runtime) }}
+                </span>
+                <span *ngIf="episode.vote_average" class="episode-rating">
+                  ⭐ {{ getRating(episode) }}
+                </span>
+              </div>
+              <p class="episode-overview" *ngIf="episode.overview">{{ episode.overview }}</p>
+              <div class="episode-crew" *ngIf="episode.crew && episode.crew.length">
+                <span *ngFor="let crew of episode.crew.slice(0, 2)">
+                  <strong>{{ crew.job }}:</strong> {{ crew.name }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

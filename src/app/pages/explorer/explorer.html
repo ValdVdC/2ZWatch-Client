@@ -1,1 +1,288 @@
-<p>explorer works!</p>
+<!-- Explorer Page -->
+<div class="explorer-page">
+  <!-- Header Section -->
+  <section class="explorer-header">
+    <div class="container-fluid px-3 px-md-4 px-lg-5">
+      <div class="header-content">
+        <h1 class="page-title mb-3">Explorar Conteúdo</h1>
+        <p class="page-description mb-4">
+          Descubra filmes e séries incríveis com filtros avançados
+        </p>
+
+        <!-- Content Type Toggle -->
+        <div class="content-toggle mb-4">
+          <button 
+            class="toggle-btn"
+            [class.active]="contentType === 'movies'"
+            (click)="toggleContentType('movies')">
+            <i class="bi bi-camera-reels me-2"></i>
+            Filmes
+          </button>
+          <button 
+            class="toggle-btn"
+            [class.active]="contentType === 'series'"
+            (click)="toggleContentType('series')">
+            <i class="bi bi-tv me-2"></i>
+            Séries
+          </button>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="explorer-search mb-4">
+          <app-search-bar
+            [placeholder]="'Buscar ' + (contentType === 'movies' ? 'filmes' : 'séries') + '...'"
+            [initialValue]="searchQuery"
+            [showFilters]="true"
+            (search)="onSearch($event)"
+            (filterToggle)="toggleFilters()">
+          </app-search-bar>
+        </div>
+
+        <!-- Active Filters Summary -->
+        <div class="active-filters" *ngIf="hasActiveFilters()">
+          <div class="filters-summary">
+            <span class="filter-label">Filtros ativos:</span>
+            
+            <span class="filter-tag" *ngIf="filters.genre && currentGenres[filters.genre]">
+              {{ currentGenres[filters.genre] }}
+              <button class="remove-filter" (click)="filters.genre = undefined; applyFilters()">
+                <i class="bi bi-x"></i>
+              </button>
+            </span>
+
+            <span class="filter-tag" *ngIf="filters.year">
+              {{ filters.year }}
+              <button class="remove-filter" (click)="filters.year = undefined; applyFilters()">
+                <i class="bi bi-x"></i>
+              </button>
+            </span>
+
+            <span class="filter-tag" *ngIf="filters.minRating">
+              ⭐ {{ filters.minRating }}+
+              <button class="remove-filter" (click)="filters.minRating = undefined; applyFilters()">
+                <i class="bi bi-x"></i>
+              </button>
+            </span>
+
+            <button class="clear-all-filters" (click)="clearFilters()">
+              <i class="bi bi-x-circle me-1"></i>
+              Limpar tudo
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <section class="explorer-content">
+    <div class="container-fluid px-3 px-md-4 px-lg-5">
+      <div class="row g-4">
+        <!-- Filters Sidebar -->
+        <div class="col-12 col-lg-3" *ngIf="showFilters">
+          <div class="filters-panel">
+            <div class="filters-header">
+              <h3 class="filters-title">
+                <i class="bi bi-funnel me-2"></i>
+                Filtros
+              </h3>
+              <button class="close-filters d-lg-none" (click)="toggleFilters()">
+                <i class="bi bi-x"></i>
+              </button>
+            </div>
+
+            <div class="filters-body">
+              <!-- Genre Filter -->
+              <div class="filter-group">
+                <label class="filter-label">Gênero</label>
+                <select 
+                  class="filter-select"
+                  [(ngModel)]="filters.genre"
+                  (change)="applyFilters()">
+                  <option [value]="undefined">Todos os gêneros</option>
+                  <option *ngFor="let genre of genreEntries" [value]="genre[0]">
+                    {{ genre[1] }}
+                  </option>
+                </select>
+              </div>
+
+              <!-- Year Filter -->
+              <div class="filter-group">
+                <label class="filter-label">Ano</label>
+                <select 
+                  class="filter-select"
+                  [(ngModel)]="filters.year"
+                  (change)="applyFilters()">
+                  <option [value]="undefined">Todos os anos</option>
+                  <option *ngFor="let year of years" [value]="year">
+                    {{ year }}
+                  </option>
+                </select>
+              </div>
+
+              <!-- Rating Filter -->
+              <div class="filter-group">
+                <label class="filter-label">Avaliação Mínima</label>
+                <div class="rating-filter">
+                  <input 
+                    type="range"
+                    class="rating-slider"
+                    min="0"
+                    max="10"
+                    step="0.5"
+                    [(ngModel)]="filters.minRating"
+                    (change)="applyFilters()">
+                  <div class="rating-value">
+                    <span *ngIf="filters.minRating">⭐ {{ filters.minRating }}</span>
+                    <span *ngIf="!filters.minRating">Qualquer</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Sort By -->
+              <div class="filter-group">
+                <label class="filter-label">Ordenar por</label>
+                <select 
+                  class="filter-select"
+                  [(ngModel)]="filters.sortBy"
+                  (change)="applyFilters()">
+                  <option *ngFor="let option of sortOptions" [value]="option.value">
+                    {{ option.label }}
+                  </option>
+                </select>
+              </div>
+
+              <!-- Filter Actions -->
+              <div class="filter-actions">
+                <button class="btn btn-primary w-100 mb-2" (click)="applyFilters()">
+                  <i class="bi bi-check2 me-2"></i>
+                  Aplicar Filtros
+                </button>
+                <button class="btn btn-outline-secondary w-100" (click)="clearFilters()">
+                  <i class="bi bi-arrow-clockwise me-2"></i>
+                  Limpar Filtros
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Content Grid -->
+        <div class="col-12" [class.col-lg-9]="showFilters">
+          <!-- Results Info -->
+          <div class="results-info mb-4">
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3">
+              <div class="results-count">
+                <h2 class="mb-0">
+                  {{ searchQuery ? 'Resultados da busca' : (contentType === 'movies' ? 'Filmes' : 'Séries') }}
+                </h2>
+                <p class="text-muted small mb-0" *ngIf="!loading">
+                  Mostrando {{ currentContent.length }} de 
+                  {{ (contentType === 'movies' ? allMovies : allSeries).length }}
+                  {{ hasMore ? '+ itens' : 'itens' }}
+                </p>
+              </div>
+
+              <!-- Toggle Filters Button (Mobile) -->
+              <button class="btn btn-outline-primary d-lg-none" (click)="toggleFilters()">
+                <i class="bi bi-funnel me-2"></i>
+                {{ showFilters ? 'Ocultar' : 'Mostrar' }} Filtros
+              </button>
+            </div>
+          </div>
+
+          <!-- Content Grid -->
+          <div class="content-grid row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-xl-5 g-3 g-md-4" *ngIf="!loading && currentContent.length > 0">
+            <div class="col" *ngFor="let item of currentContent">
+              <div class="content-card h-100" (click)="onCardClick(item)">
+                <div class="card-image poster-container mb-2">
+                  <img 
+                    [src]="getImageUrl(item.poster_path)"
+                    [alt]="getTitle(item)"
+                    loading="lazy">
+                  <div class="card-overlay">
+                    <button class="play-button">▶</button>
+                  </div>
+                  <div class="card-rating">
+                    ⭐ {{ getRating(item.vote_average) }}
+                  </div>
+                </div>
+                <div class="card-content">
+                  <h4 class="card-title">{{ getTitle(item) }}</h4>
+                  <div class="card-meta d-flex justify-content-between align-items-center">
+                    <span class="year text-muted small">{{ getYear(item) }}</span>
+                    <span class="type-badge badge">
+                      {{ contentType === 'movies' ? 'Filme' : 'Série' }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Loading State -->
+          <div class="content-grid row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-xl-5 g-3 g-md-4" *ngIf="loading">
+            <div class="col" *ngFor="let item of [1,2,3,4,5,6,7,8,9,10]">
+              <div class="placeholder-card">
+                <div class="placeholder-glow">
+                  <div class="placeholder col-12 poster-placeholder"></div>
+                  <div class="placeholder col-12 mt-2"></div>
+                  <div class="placeholder col-8 mt-1"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty State -->
+          <div class="empty-state text-center py-5" *ngIf="!loading && currentContent.length === 0">
+            <div class="empty-icon mb-4">
+              <i class="bi bi-search" style="font-size: 4rem; opacity: 0.3;"></i>
+            </div>
+            <h3 class="mb-3">Nenhum resultado encontrado</h3>
+            <p class="text-muted mb-4">
+              {{ searchQuery ? 
+                'Tente ajustar sua busca ou filtros para encontrar o que procura.' :
+                'Não encontramos nenhum conteúdo com os filtros aplicados.'
+              }}
+            </p>
+            <button class="btn btn-primary" (click)="clearFilters()">
+              <i class="bi bi-arrow-clockwise me-2"></i>
+              Limpar Filtros
+            </button>
+          </div>
+
+          <!-- Pagination -->
+          <div class="pagination-spacer" *ngIf="!loading && currentContent.length > 0 && totalPages > 1"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Fixed Pagination at Bottom -->
+  <div class="pagination-fixed-wrapper" *ngIf="!loading && currentContent.length > 0 && totalPages > 1">
+    <div class="container-fluid px-3 px-md-4 px-lg-5">
+      <div class="pagination-fixed-container">
+        <app-pagination
+          [currentPage]="currentPage"
+          [totalPages]="totalPages"
+          (pageChange)="onPageChange($event)">
+        </app-pagination>
+        
+        <!-- Loading more indicator -->
+        <div class="loading-more-indicator" *ngIf="isLoadingMore">
+          <div class="spinner-border spinner-border-sm text-primary me-2" role="status">
+            <span class="visually-hidden">Carregando...</span>
+          </div>
+          <span class="text-muted small">Carregando mais conteúdo...</span>
+        </div>
+
+        <!-- Has more indicator -->
+        <div class="has-more-indicator" *ngIf="hasMore && !isLoadingMore">
+          <span class="text-muted small">
+            <i class="bi bi-arrow-down-circle me-1"></i>
+            Mais páginas disponíveis
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>

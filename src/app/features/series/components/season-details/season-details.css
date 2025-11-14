@@ -1,0 +1,356 @@
+.season-details-page {
+  min-height: 100vh;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  padding-top: 72px;
+}
+
+/* Loading State */
+.loading-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid var(--border-color);
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Error State */
+.error-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.error-content {
+  text-align: center;
+  max-width: 500px;
+  padding: 2rem;
+}
+
+.error-icon {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+}
+
+.error-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+/* Back Navigation - Floating Button */
+.back-navigation {
+  position: fixed;
+  top: clamp(80px, 12vh, 100px);
+  left: clamp(1rem, 3vw, 2rem);
+  z-index: 1000;
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: rgba(var(--bg-primary-rgb), 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 2px solid var(--border-color);
+  color: var(--text-primary);
+  font-size: clamp(0.9rem, 2vw, 1rem);
+  font-weight: 600;
+  cursor: pointer;
+  padding: clamp(0.75rem, 2vw, 1rem);
+  border-radius: 50px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  text-decoration: none;
+}
+
+.back-btn:hover {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+  transform: translateX(-4px) scale(1.05);
+  box-shadow: 0 6px 20px rgba(var(--primary-rgb), 0.4);
+}
+
+.back-btn:active {
+  transform: translateX(-4px) scale(0.98);
+}
+
+.back-btn svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.back-btn-text {
+  display: none;
+}
+
+/* Desktop - Show text */
+@media (min-width: 768px) {
+  .back-btn {
+    padding: clamp(0.75rem, 2vw, 1rem) clamp(1.25rem, 3vw, 1.5rem);
+  }
+  
+  .back-btn-text {
+    display: inline;
+  }
+}
+
+/* Mobile - Icon only (circular) */
+@media (max-width: 767px) {
+  .back-navigation {
+    top: clamp(70px, 10vh, 80px);
+    left: 1rem;
+  }
+  
+  .back-btn {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border-radius: 50%;
+  }
+}
+
+/* Season Header */
+.season-header {
+  padding: 3rem 0;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.header-grid {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.season-poster img {
+  width: 100%;
+  aspect-ratio: 2/3;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.season-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.season-meta {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  color: var(--text-secondary);
+}
+
+.season-meta span {
+  padding: 0.5rem 1rem;
+  background: var(--bg-tertiary);
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.season-overview {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+/* Episodes Section */
+.episodes-section {
+  padding: 3rem 0;
+}
+
+.episodes-title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+}
+
+.episodes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.episode-card {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.episode-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  border-color: var(--primary-color);
+}
+
+.episode-still {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.episode-still img {
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  display: block;
+}
+
+.episode-number-badge {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.episode-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.episode-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.episode-meta {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.episode-meta span {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.episode-rating {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.episode-overview {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.episode-crew {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-top: auto;
+}
+
+.episode-crew strong {
+  color: var(--text-primary);
+}
+
+/* Container */
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* Buttons */
+.btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background: var(--primary-color);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--primary-hover);
+}
+
+.btn-secondary {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+  background: var(--bg-secondary);
+  border-color: var(--primary-color);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .header-grid {
+    grid-template-columns: 150px 1fr;
+    gap: 1.5rem;
+  }
+
+  .season-title {
+    font-size: 1.8rem;
+  }
+
+  .episode-card {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .episode-still img {
+    aspect-ratio: 16/9;
+  }
+}

@@ -9,53 +9,60 @@
   </div>
 
   <div class="hero-content">
-    <div class="container">
-      <div class="hero-text">
-        <h1 class="hero-title">
-          Descubra o Mundo do <br>
-          <span class="gradient-text">Cinema e TV</span>
-        </h1>
-        <p class="hero-description">
-          Explore milhares de filmes e séries, descubra novos favoritos 
-          e mergulhe no universo do entretenimento.
-        </p>
-        
-        <!-- Search Bar -->
-        <div class="hero-search">
-          <app-search-bar
-            placeholder="Buscar filmes, séries..."
-            (search)="onSearchSubmit($event)">
-          </app-search-bar>
-        </div>
-
-        <!-- Hero Navigation -->
-        <div class="hero-nav" *ngIf="heroItems.length > 1">
-          <button 
-            *ngFor="let item of heroItems; let i = index"
-            class="hero-nav-dot"
-            [class.active]="i === currentHeroIndex"
-            (click)="goToHeroItem(i)">
-          </button>
-        </div>
-      </div>
-
-      <!-- Featured Content Card -->
-      <div class="hero-featured" *ngIf="currentHeroItem">
-        <div class="featured-card">
-          <img 
-            [src]="getImageUrl(currentHeroItem.poster_path)"
-            [alt]="getTitle(currentHeroItem)"
-            class="featured-poster">
-          <div class="featured-info">
-            <h3 class="featured-title">{{ getTitle(currentHeroItem) }}</h3>
-            <div class="featured-meta">
-              <span class="rating">
-                ⭐ {{ getRating(currentHeroItem.vote_average) }}
-              </span>
-              <span class="type">{{ isMovie(currentHeroItem) ? 'Filme' : 'Série' }}</span>
+    <div class="container-fluid px-3 px-md-4 px-lg-5">
+      <div class="row g-4 align-items-center">
+        <!-- Hero Text -->
+        <div class="col-12 col-lg-7">
+          <div class="hero-text">
+            <h1 class="hero-title mb-3 mb-md-4">
+              Descubra o Mundo do <br class="d-none d-sm-block">
+              <span class="gradient-text">Cinema e TV</span>
+            </h1>
+            <p class="hero-description mb-4">
+              Explore milhares de filmes e séries, descubra novos favoritos 
+              e mergulhe no universo do entretenimento.
+            </p>
+            
+            <!-- Search Bar -->
+            <div class="hero-search mb-4">
+              <app-search-bar
+                placeholder="Buscar filmes, séries..."
+                (search)="onSearchSubmit($event)">
+              </app-search-bar>
             </div>
-            <p class="featured-overview">{{ currentHeroItem.overview | truncate:120 }}</p>
-            <button class="btn btn-primary" (click)="onHeroClick()">Ver Detalhes</button>
+
+            <!-- Hero Navigation -->
+            <div class="hero-nav d-flex gap-2 justify-content-center justify-content-lg-start" *ngIf="heroItems.length > 1">
+              <button 
+                *ngFor="let item of heroItems; let i = index"
+                class="hero-nav-dot"
+                [class.active]="i === currentHeroIndex"
+                (click)="goToHeroItem(i)">
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Featured Content Card -->
+        <div class="col-12 col-lg-5 d-none d-lg-block" *ngIf="currentHeroItem">
+          <div class="hero-featured">
+            <div class="featured-card">
+              <img 
+                [src]="getImageUrl(currentHeroItem.poster_path)"
+                [alt]="getTitle(currentHeroItem)"
+                class="featured-poster img-fluid">
+              <div class="featured-info">
+                <h3 class="featured-title">{{ getTitle(currentHeroItem) }}</h3>
+                <div class="featured-meta d-flex gap-3 mb-2">
+                  <span class="rating">
+                    ⭐ {{ getRating(currentHeroItem.vote_average) }}
+                  </span>
+                  <span class="type badge">{{ isMovie(currentHeroItem) ? 'Filme' : 'Série' }}</span>
+                </div>
+                <p class="featured-overview">{{ currentHeroItem.overview | truncate:120 }}</p>
+                <button class="btn btn-primary w-100" (click)="onHeroClick()">Ver Detalhes</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -64,140 +71,176 @@
 </section>
 
 <!-- Features Section -->
-<section id="features" class="features">
+<section id="features" class="features py-5">
   <div class="container">
-    <div class="section-header">
-      <h2 class="section-title">Por que escolher o ZWatch?</h2>
+    <div class="section-header text-center mb-5">
+      <h2 class="section-title mb-3">Por que escolher o ZWatch?</h2>
       <p class="section-description">
         A plataforma completa para descobrir e explorar o melhor do entretenimento
       </p>
     </div>
 
-    <div class="features-grid">
-      <div class="feature-card" *ngFor="let feature of features">
-        <div class="feature-icon">{{ feature.icon }}</div>
-        <h3 class="feature-title">{{ feature.title }}</h3>
-        <p class="feature-description">{{ feature.description }}</p>
-        <button class="feature-action">{{ feature.action }}</button>
+    <div class="row g-4">
+      <div class="col-12 col-sm-6 col-lg-3" *ngFor="let feature of features">
+        <div class="feature-card h-100 text-center d-flex flex-column">
+          <div class="feature-icon mb-3">{{ feature.icon }}</div>
+          <h3 class="feature-title h5 mb-2">{{ feature.title }}</h3>
+          <p class="feature-description mb-3 flex-grow-1">{{ feature.description }}</p>
+          <button 
+            class="btn btn-sm btn-outline-primary mt-auto"
+            (click)="onFeatureClick(feature)">
+            {{ feature.action }}
+          </button>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- Popular Movies Section -->
-<section id="popular" class="popular-section">
+<section id="popular" class="popular-section py-5">
   <div class="container">
-    <div class="section-header">
-      <h2 class="section-title">Filmes Populares</h2>
-      <button routerLink="/movies" class="btn btn-secondary">Ver Todos</button>
+    <div class="section-header d-flex flex-column flex-sm-row justify-content-between align-items-center mb-4 gap-3">
+      <h2 class="section-title mb-0">Filmes Populares</h2>
+      <button routerLink="/movies" class="btn btn-secondary">
+        Ver Todos <i class="bi bi-arrow-right ms-1"></i>
+      </button>
     </div>
 
-    <div class="content-grid" *ngIf="!loadingMovies && popularMovies.length > 0">
-      <div class="content-card" *ngFor="let movie of popularMovies">
-        <div class="card-image">
-          <img 
-            [src]="getImageUrl(movie.poster_path)"
-            [alt]="movie.title"
-            loading="lazy">
-          <div class="card-overlay">
-            <button class="play-button" (click)="onCardClick(movie)">▶</button>
+    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 row-cols-xl-6 g-3 g-md-4" *ngIf="!loadingMovies && popularMovies.length > 0">
+      <div class="col" *ngFor="let movie of popularMovies.slice(0,18)">
+        <div class="content-card h-100">
+          <div class="card-image poster-container mb-2">
+            <img 
+              [src]="getImageUrl(movie.poster_path)"
+              [alt]="movie.title"
+              loading="lazy">
+            <div class="card-overlay">
+              <button class="play-button" (click)="onCardClick(movie)">▶</button>
+            </div>
           </div>
-        </div>
-        <div class="card-content">
-          <h4 class="card-title">{{ movie.title }}</h4>
-          <div class="card-meta">
-            <span class="rating">⭐ {{ getRating(movie.vote_average) }}</span>
-            <span class="year">{{ movie.release_date | date:'yyyy' }}</span>
+          <div class="card-content">
+            <h4 class="card-title small">{{ movie.title }}</h4>
+            <div class="card-meta d-flex justify-content-between align-items-center">
+              <span class="rating small">⭐ {{ getRating(movie.vote_average) }}</span>
+              <span class="year small text-muted">{{ movie.release_date | date:'yyyy' }}</span>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="loading-placeholder" *ngIf="loadingMovies">
-      <div class="placeholder-card" *ngFor="let item of [1,2,3,4,5,6,7,8]"></div>
+    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 row-cols-xl-6 g-3 g-md-4" *ngIf="loadingMovies">
+      <div class="col" *ngFor="let item of [1,2,3,4,5,6,7,8]">
+        <div class="placeholder-card">
+          <div class="placeholder-glow">
+            <div class="placeholder col-12" style="height: 300px;"></div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- Popular Series Section -->
-<section class="popular-section series-section">
+<section class="popular-section series-section py-5">
   <div class="container">
-    <div class="section-header">
-      <h2 class="section-title">Séries em Alta</h2>
-      <button routerLink="/series" class="btn btn-secondary">Ver Todas</button>
+    <div class="section-header d-flex flex-column flex-sm-row justify-content-between align-items-center mb-4 gap-3">
+      <h2 class="section-title mb-0">Séries em Alta</h2>
+      <button routerLink="/series" class="btn btn-secondary">
+        Ver Todas <i class="bi bi-arrow-right ms-1"></i>
+      </button>
     </div>
 
-    <div class="content-grid" *ngIf="!loadingSeries && popularSeries.length > 0">
-      <div class="content-card" *ngFor="let series of popularSeries">
-        <div class="card-image">
-          <img 
-            [src]="getImageUrl(series.poster_path)"
-            [alt]="series.name"
-            loading="lazy">
-          <div class="card-overlay">
-            <button class="play-button" (click)="onCardClick(series)">▶</button>
+    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 row-cols-xl-6 g-3 g-md-4" *ngIf="!loadingSeries && popularSeries.length > 0">
+      <div class="col" *ngFor="let series of popularSeries.slice(0,18)">
+        <div class="content-card h-100">
+          <div class="card-image poster-container mb-2">
+            <img 
+              [src]="getImageUrl(series.poster_path)"
+              [alt]="series.name"
+              loading="lazy">
+            <div class="card-overlay">
+              <button class="play-button" (click)="onCardClick(series)">▶</button>
+            </div>
           </div>
-        </div>
-        <div class="card-content">
-          <h4 class="card-title">{{ series.name }}</h4>
-          <div class="card-meta">
-            <span class="rating">⭐ {{ getRating(series.vote_average) }}</span>
-            <span class="year">{{ series.first_air_date | date:'yyyy' }}</span>
+          <div class="card-content">
+            <h4 class="card-title small">{{ series.name }}</h4>
+            <div class="card-meta d-flex justify-content-between align-items-center">
+              <span class="rating small">⭐ {{ getRating(series.vote_average) }}</span>
+              <span class="year small text-muted">{{ series.first_air_date | date:'yyyy' }}</span>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="loading-placeholder" *ngIf="loadingSeries">
-      <div class="placeholder-card" *ngFor="let item of [1,2,3,4,5,6,7,8]"></div>
+    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 row-cols-xl-6 g-3 g-md-4" *ngIf="loadingSeries">
+      <div class="col" *ngFor="let item of [1,2,3,4,5,6,7,8]">
+        <div class="placeholder-card">
+          <div class="placeholder-glow">
+            <div class="placeholder col-12" style="height: 300px;"></div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- About Section -->
-<section id="about" class="about">
+<section id="about" class="about py-5">
   <div class="container">
-    <div class="about-content">
-      <div class="about-text">
-        <h2 class="section-title">Sobre o ZWatch</h2>
-        <p class="about-description">
-          O ZWatch é sua porta de entrada para o mundo do entretenimento. 
-          Nossa plataforma oferece informações completas sobre filmes e séries, 
-          desde os clássicos atemporais até os lançamentos mais recentes.
-        </p>
-        <p class="about-description">
-          Com interface moderna e intuitiva, você pode descobrir novos conteúdos, 
-          ver avaliações da comunidade e encontrar exatamente o que procura 
-          através de nossa busca avançada e sistema de filtros.
-        </p>
-        <div class="about-stats">
-          <div class="stat">
-            <span class="stat-number">50K+</span>
-            <span class="stat-label">Filmes</span>
-          </div>
-          <div class="stat">
-            <span class="stat-number">20K+</span>
-            <span class="stat-label">Séries</span>
-          </div>
-          <div class="stat">
-            <span class="stat-number">1M+</span>
-            <span class="stat-label">Usuários</span>
+    <div class="row g-4 align-items-center">
+      <div class="col-12 col-lg-6">
+        <div class="about-text">
+          <h2 class="section-title mb-4">Sobre o ZWatch</h2>
+          <p class="about-description mb-3">
+            O ZWatch é sua porta de entrada para o mundo do entretenimento. 
+            Nossa plataforma oferece informações completas sobre filmes e séries, 
+            desde os clássicos atemporais até os lançamentos mais recentes.
+          </p>
+          <p class="about-description mb-4">
+            Com interface moderna e intuitiva, você pode descobrir novos conteúdos, 
+            ver avaliações da comunidade e encontrar exatamente o que procura 
+            através de nossa busca avançada e sistema de filtros.
+          </p>
+          <div class="row g-3 about-stats">
+            <div class="col-4">
+              <div class="stat text-center">
+                <span class="stat-number d-block h2 mb-1">50K+</span>
+                <span class="stat-label text-muted small">Filmes</span>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="stat text-center">
+                <span class="stat-number d-block h2 mb-1">20K+</span>
+                <span class="stat-label text-muted small">Séries</span>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="stat text-center">
+                <span class="stat-number d-block h2 mb-1">1M+</span>
+                <span class="stat-label text-muted small">Usuários</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <div class="about-image">
-        <div class="image-placeholder">
-          <div class="floating-card">
-            <span class="card-icon">🎬</span>
-            <span class="card-text">Cinema</span>
-          </div>
-          <div class="floating-card">
-            <span class="card-icon">📺</span>
-            <span class="card-text">Séries</span>
-          </div>
-          <div class="floating-card">
-            <span class="card-icon">⭐</span>
-            <span class="card-text">Avaliações</span>
+      <div class="col-12 col-lg-6">
+        <div class="about-image">
+          <div class="image-placeholder d-flex flex-wrap gap-3 justify-content-center align-items-center p-4">
+            <div class="floating-card">
+              <span class="card-icon">🎬</span>
+              <span class="card-text">Cinema</span>
+            </div>
+            <div class="floating-card">
+              <span class="card-icon">📺</span>
+              <span class="card-text">Séries</span>
+            </div>
+            <div class="floating-card">
+              <span class="card-icon">⭐</span>
+              <span class="card-text">Avaliações</span>
+            </div>
           </div>
         </div>
       </div>
@@ -206,53 +249,57 @@
 </section>
 
 <!-- Contact Section -->
-<section id="contact" class="contact">
+<section id="contact" class="contact py-5">
   <div class="container">
-    <div class="section-header">
-      <h2 class="section-title">Entre em Contato</h2>
+    <div class="section-header text-center mb-5">
+      <h2 class="section-title mb-3">Entre em Contato</h2>
       <p class="section-description">
         Tem alguma dúvida ou sugestão? Adoraríamos ouvir você!
       </p>
     </div>
 
-    <div class="contact-content">
-      <div class="contact-info">
-        <div class="contact-item">
-          <span class="contact-icon">📧</span>
-          <div>
-            <h4>Email</h4>
-            <p>contato@zwatch.com</p>
+    <div class="row g-4">
+      <div class="col-12 col-lg-5">
+        <div class="contact-info d-flex flex-column gap-4">
+          <div class="contact-item d-flex gap-3 align-items-start">
+            <span class="contact-icon fs-3">📧</span>
+            <div>
+              <h4 class="h6 mb-1">Email</h4>
+              <p class="mb-0 text-muted">contato@zwatch.com</p>
+            </div>
           </div>
-        </div>
-        <div class="contact-item">
-          <span class="contact-icon">💬</span>
-          <div>
-            <h4>Redes Sociais</h4>
-            <p>@zwatch em todas as plataformas</p>
+          <div class="contact-item d-flex gap-3 align-items-start">
+            <span class="contact-icon fs-3">💬</span>
+            <div>
+              <h4 class="h6 mb-1">Redes Sociais</h4>
+              <p class="mb-0 text-muted">@zwatch em todas as plataformas</p>
+            </div>
           </div>
-        </div>
-        <div class="contact-item">
-          <span class="contact-icon">🌟</span>
-          <div>
-            <h4>Avalie-nos</h4>
-            <p>Deixe sua opinião e nos ajude a melhorar</p>
+          <div class="contact-item d-flex gap-3 align-items-start">
+            <span class="contact-icon fs-3">🌟</span>
+            <div>
+              <h4 class="h6 mb-1">Avalie-nos</h4>
+              <p class="mb-0 text-muted">Deixe sua opinião e nos ajude a melhorar</p>
+            </div>
           </div>
         </div>
       </div>
       
-      <div class="contact-form">
-        <form class="form">
-          <div class="form-group">
-            <input type="text" placeholder="Seu nome" class="form-input">
-          </div>
-          <div class="form-group">
-            <input type="email" placeholder="Seu email" class="form-input">
-          </div>
-          <div class="form-group">
-            <textarea placeholder="Sua mensagem" rows="5" class="form-input"></textarea>
-          </div>
-          <button type="submit" class="btn btn-primary full-width">Enviar Mensagem</button>
-        </form>
+      <div class="col-12 col-lg-7">
+        <div class="contact-form">
+          <form class="form">
+            <div class="mb-3">
+              <input type="text" placeholder="Seu nome" class="form-control form-input">
+            </div>
+            <div class="mb-3">
+              <input type="email" placeholder="Seu email" class="form-control form-input">
+            </div>
+            <div class="mb-3">
+              <textarea placeholder="Sua mensagem" rows="5" class="form-control form-input"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Enviar Mensagem</button>
+          </form>
+        </div>
       </div>
     </div>
   </div>

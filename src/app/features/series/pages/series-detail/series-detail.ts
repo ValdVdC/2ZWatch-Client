@@ -4,8 +4,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 // import { Video } from '../../../movies/models/movie.model';
 import { Subscription } from 'rxjs';
-import { SeriesDetail as SeriesDetailModel } from '../../models/series.model';
+import { SeriesDetail as SeriesDetailModel, Season } from '../../models/series.model';
 import { SeriesService } from '../../services/series.service';
+import { Collection, Video } from '../../../movies/models/movie.model';
 
 @Component({
   selector: 'app-series-detail',
@@ -19,8 +20,9 @@ export class SeriesDetail implements OnInit, OnDestroy {
   series: SeriesDetailModel | null = null;
   loading = false;
   error: string | null = null;
-  activeTab: 'details' | 'cast' | 'videos' | 'images' | 'similar' = 'details';
+  activeTab: 'details' | 'cast' | 'videos' | 'images' | 'similar' | 'seasons' = 'details';
   showFullOverview = false;
+  selectedSeason: Season | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -159,7 +161,7 @@ export class SeriesDetail implements OnInit, OnDestroy {
     }
   }
 
-  setActiveTab(tab: 'details' | 'cast' | 'videos' | 'images' | 'similar'): void {
+  setActiveTab(tab: 'details' | 'cast' | 'videos' | 'images' | 'similar' | 'seasons'): void {
     this.activeTab = tab;
   }
 
@@ -195,23 +197,31 @@ export class SeriesDetail implements OnInit, OnDestroy {
     }
   }
 
-  // onPlayTrailer(): void {
-  //   if (!this.series?.videos?.length) return;
+    onPlayTrailer(): void {
+      if (!this.series?.videos?.length) return;
 
-  //   const trailer = this.series.videos.find(video => 
-  //     video.type.toLowerCase().includes('trailer')
-  //   ) || this.series.videos[0];
+      const trailer = this.series.videos.find(video => 
+        video.type.toLowerCase().includes('trailer')
+      ) || this.series.videos[0];
 
-  //   this.playVideo(trailer);
-  // }
+      this.playVideo(trailer);
+    }
 
-  // playVideo(video: Video): void {
-  //   // Open in new window/tab
-  //   window.open(video.url, '_blank', 'noopener,noreferrer');
-  // }
+    playVideo(video: Video): void {
+      // Open in new window/tab
+      window.open(video.url, '_blank', 'noopener,noreferrer');
+    }
 
   viewSeries(seriesId: number): void {
     this.router.navigate(['/series', seriesId]);
+  }
+
+  viewSeason(seriesId: number, seasonNumber: number): void {
+    this.router.navigate(['/series', seriesId, 'season', seasonNumber]);
+  }
+
+  viewEpisode(seriesId: number, seasonNumber: number, episodeNumber: number): void {
+    this.router.navigate(['/series', seriesId, 'season', seasonNumber, 'episode', episodeNumber]);
   }
 
   viewPerson(personId: number): void {
@@ -219,10 +229,10 @@ export class SeriesDetail implements OnInit, OnDestroy {
     console.log('View person:', personId);
   }
 
-  // viewCollection(collection: Collection): void {
-  //   // TODO: Navigate to collection page when implemented
-  //   console.log('View collection:', collection);
-  // }
+    viewCollection(collection: Collection): void {
+      // TODO: Navigate to collection page when implemented
+      console.log('View collection:', collection);
+    }
 
   openLightbox(imageUrl: string): void {
     // TODO: Implement image lightbox/modal
@@ -251,10 +261,10 @@ export class SeriesDetail implements OnInit, OnDestroy {
     return count.toString();
   }
 
-  // getCollectionPoster(collection: Collection): string {
-  //   if (!collection.poster_path) return '/assets/placeholder-series.jpg';
-  //   return `https://image.tmdb.org/t/p/w185${collection.poster_path}`;
-  // }
+    getCollectionPoster(collection: Collection): string {
+      if (!collection.poster_path) return '/assets/placeholder-series.jpg';
+      return `https://image.tmdb.org/t/p/w185${collection.poster_path}`;
+    }
 
   getSimilarSeriesPoster(series: any): string {
     if (!series.poster_path) return '/assets/placeholder-series.jpg';
@@ -281,5 +291,17 @@ export class SeriesDetail implements OnInit, OnDestroy {
     };
 
     return typeMap[type] || type;
+  }
+
+  getSeasonPoster(season: Season): string {
+    if (season.poster_url) return season.poster_url;
+    if (season.poster_path) return `https://image.tmdb.org/t/p/w300${season.poster_path}`;
+    return '/assets/placeholder-series.jpg';
+  }
+
+  formatDate(dateString: string): string {
+    if (!dateString) return 'Data não disponível';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('pt-BR', { year: 'numeric', month: 'long', day: 'numeric' });
   }
 }

@@ -1,148 +1,285 @@
+/* Header responsivo com Bootstrap - Versão Moderna */
 .header {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  z-index: 1000;
-  background: rgba(var(--bg-primary-rgb), 0.95);
-  backdrop-filter: blur(20px);
+  z-index: 1030;
+  background: var(--bg-primary) !important;
   border-bottom: 1px solid var(--border-color);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08),
+              0 4px 16px rgba(0, 0, 0, 0.04);
   transition: all 0.3s ease;
 }
 
-.navbar {
-  width: 100%;
-  padding: 0.5rem 0;
+/* Overlay sutil para dar profundidade */
+.header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, 
+    transparent 0%, 
+    rgba(var(--primary-rgb), 0.02) 100%
+  );
+  pointer-events: none;
+  z-index: 0;
 }
 
-.navbar-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+/* Gradiente animado na borda inferior */
+.header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--primary-color),
+    var(--secondary-color),
+    var(--primary-color),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: borderGradient 3s ease-in-out infinite;
 }
 
-.navbar-brand .brand-link {
-  text-decoration: none;
-  color: var(--text-primary);
+@keyframes borderGradient {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.navbar-custom {
+  background: transparent !important;
+  padding: 0.75rem 0;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+}
+
+/* Brand styling com efeito hover */
+.navbar-brand {
+  margin-right: 1rem;
+  padding: 0;
+  position: relative;
+  overflow: hidden;
 }
 
 .brand-text {
-  font-size: 1.75rem;
+  font-size: clamp(1.25rem, 4vw, 1.75rem);
   font-weight: 700;
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-}
-
-.mobile-toggle {
-  display: none;
-  flex-direction: column;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0.5rem;
-}
-
-.hamburger-line {
-  width: 25px;
-  height: 3px;
-  background: var(--text-primary);
-  margin: 3px 0;
-  transition: 0.3s;
-  border-radius: 2px;
-}
-
-.mobile-toggle.active .hamburger-line:nth-child(1) {
-  transform: rotate(-45deg) translate(-5px, 6px);
-}
-
-.mobile-toggle.active .hamburger-line:nth-child(2) {
-  opacity: 0;
-}
-
-.mobile-toggle.active .hamburger-line:nth-child(3) {
-  transform: rotate(45deg) translate(-5px, -6px);
-}
-
-.navbar-menu {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-}
-
-.navbar-nav {
-  display: flex;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  gap: 2rem;
-}
-
-.nav-item {
-  position: relative;
-}
-
-.nav-link {
-  color: var(--text-secondary);
   text-decoration: none;
-  font-weight: 500;
-  padding: 0.5rem 0;
-  transition: all 0.3s ease;
-  cursor: pointer;
   position: relative;
+  transition: all 0.3s ease;
 }
 
-.nav-link:hover {
-  color: var(--primary-color);
+.navbar-brand:hover .brand-text {
+  filter: brightness(1.2);
+  transform: translateY(-1px);
 }
 
-.nav-link::after {
+/* Efeito de brilho no hover do brand */
+.navbar-brand::before {
   content: '';
   position: absolute;
-  bottom: -2px;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.navbar-brand:hover::before {
+  left: 100%;
+}
+
+/* Navbar toggler customizado com efeito moderno */
+.navbar-toggler {
+  border: 1px solid var(--border-color);
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.75rem;
+  transition: all 0.3s ease;
+  background: var(--bg-secondary);
+  position: relative;
+  z-index: 1;
+}
+
+.navbar-toggler:hover {
+  border-color: var(--primary-color);
+  background: rgba(var(--primary-rgb), 0.1);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.2);
+}
+
+.navbar-toggler:focus {
+  box-shadow: 0 0 0 0.2rem rgba(var(--primary-rgb), 0.25);
+}
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(99, 102, 241, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+  width: 1.5rem;
+  height: 1.5rem;
+  transition: transform 0.3s ease;
+}
+
+.navbar-toggler:hover .navbar-toggler-icon {
+  transform: scale(1.1);
+}
+
+[data-theme="dark"] .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(147, 197, 253, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* Nav links styling com efeitos modernos */
+.navbar-nav .nav-link {
+  color: var(--text-secondary);
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+/* Efeito de background no hover */
+.navbar-nav .nav-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
   left: 0;
-  width: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, 
+    rgba(var(--primary-rgb), 0.1), 
+    rgba(var(--secondary-rgb), 0.05)
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.navbar-nav .nav-link:hover::before {
+  opacity: 1;
+}
+
+.navbar-nav .nav-link:hover {
+  color: var(--primary-color);
+  transform: translateY(-2px);
+}
+
+.navbar-nav .nav-link.active {
+  color: var(--primary-color);
+  font-weight: 600;
+  background: linear-gradient(135deg, 
+    rgba(var(--primary-rgb), 0.15), 
+    rgba(var(--secondary-rgb), 0.1)
+  );
+}
+
+/* Indicador animado do link ativo */
+.navbar-nav .nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 1rem;
+  right: 1rem;
   height: 2px;
   background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-  transition: width 0.3s ease;
+  border-radius: 2px;
+  animation: slideIn 0.3s ease-out;
 }
 
-.nav-link:hover::after {
-  width: 100%;
+@keyframes slideIn {
+  from {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
 }
 
-.theme-toggle {
+/* Theme toggle buttons com visual moderno */
+.theme-toggle-mobile,
+.theme-toggle-desktop {
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
-  border-radius: 50px;
+  border-radius: 50%;
   padding: 0.5rem;
-  cursor: pointer;
+  width: 42px;
+  height: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
-  width: 42px;
-  height: 42px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--text-primary);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
 }
 
-.theme-toggle:hover {
-  background: var(--primary-color);
+/* Efeito de círculo expandindo no hover */
+.theme-toggle-mobile::before,
+.theme-toggle-desktop::before {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(var(--primary-rgb), 0.2);
+  transition: width 0.4s ease, height 0.4s ease;
+}
+
+.theme-toggle-mobile:hover::before,
+.theme-toggle-desktop:hover::before {
+  width: 100%;
+  height: 100%;
+}
+
+.theme-toggle-mobile:hover,
+.theme-toggle-desktop:hover {
   border-color: var(--primary-color);
+  color: var(--primary-color);
+  transform: translateY(-2px) rotate(15deg);
+  box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.3);
 }
 
 .theme-icon {
   width: 20px;
   height: 20px;
-  color: var(--text-primary);
   transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.theme-toggle-mobile:hover .theme-icon,
+.theme-toggle-desktop:hover .theme-icon {
+  transform: scale(1.1);
 }
 
 [data-theme="light"] .sun-icon {
   display: block;
+  animation: rotate 20s linear infinite;
 }
 
 [data-theme="light"] .moon-icon {
@@ -155,51 +292,173 @@
 
 [data-theme="dark"] .moon-icon {
   display: block;
+  animation: pulse 2s ease-in-out infinite;
 }
 
-@media (max-width: 768px) {
-  .navbar-container {
-    padding: 0 1rem;
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
   }
-
-  .mobile-toggle {
-    display: flex;
+  to {
+    transform: rotate(360deg);
   }
+}
 
-  .navbar-menu {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Dropdown menu styling moderno */
+.dropdown-menu {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 0.75rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12),
+              0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  animation: fadeInDown 0.3s ease-out;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdown-item {
+  color: var(--text-secondary);
+  padding: 0.75rem 1.25rem;
+  transition: all 0.2s ease;
+  border-radius: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.dropdown-item:last-child {
+  margin-bottom: 0;
+}
+
+.dropdown-item:hover {
+  background: linear-gradient(135deg, 
+    rgba(var(--primary-rgb), 0.15), 
+    rgba(var(--secondary-rgb), 0.1)
+  );
+  color: var(--primary-color);
+  transform: translateX(4px);
+}
+
+/* Mobile styles */
+@media (max-width: 991px) {
+  .navbar-collapse {
     background: var(--bg-primary);
     border-top: 1px solid var(--border-color);
-    flex-direction: column;
-    padding: 1rem 0;
-    transform: translateY(-100%);
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-  }
-
-  .navbar-menu.active {
-    transform: translateY(0);
-    opacity: 1;
-    visibility: visible;
+    margin: 0.5rem -1rem 0;
+    padding: 1rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    border-radius: 0 0 1rem 1rem;
   }
 
   .navbar-nav {
-    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .navbar-nav .nav-link {
+    padding: 0.75rem 1rem;
+  }
+
+  .navbar-nav .nav-link:hover {
+    transform: translateY(0) translateX(4px);
+  }
+
+  .navbar-nav .nav-link.active::after {
+    display: none;
+  }
+
+  .dropdown-menu {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    margin-top: 0.25rem;
+  }
+}
+
+/* Tablet styles */
+@media (min-width: 768px) and (max-width: 991px) {
+  .navbar-nav .nav-link {
+    font-size: 1rem;
+  }
+}
+
+/* Desktop styles */
+@media (min-width: 992px) {
+  .navbar-nav {
+    gap: 0.5rem;
+  }
+
+  .navbar-nav .nav-link {
+    padding: 0.5rem 0.75rem;
+  }
+}
+
+/* Large desktop */
+@media (min-width: 1200px) {
+  .navbar-nav {
     gap: 1rem;
-    margin-bottom: 1rem;
   }
 
-  .nav-link {
-    padding: 1rem 2rem;
-    display: block;
-    width: 100%;
+  .navbar-nav .nav-link {
+    padding: 0.5rem 1rem;
   }
+}
 
-  .theme-toggle {
-    margin: 0 auto;
-  }
+/* Animação do collapse */
+.navbar-collapse {
+  transition: height 0.35s ease;
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-padding-top: 80px;
+}
+
+/* Acessibilidade - foco visível moderno */
+.nav-link:focus-visible,
+.navbar-toggler:focus-visible,
+.theme-toggle-mobile:focus-visible,
+.theme-toggle-desktop:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 0 4px rgba(var(--primary-rgb), 0.1);
+}
+
+/* Efeito de scroll no header */
+.header.scrolled {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12),
+              0 2px 8px rgba(0, 0, 0, 0.08);
+  border-bottom-color: var(--primary-color);
+}
+
+.header.scrolled::after {
+  opacity: 1;
+}
+
+/* Suporte para dark mode */
+[data-theme="dark"] .header {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3),
+              0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .header.scrolled {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4),
+              0 2px 8px rgba(0, 0, 0, 0.3);
 }

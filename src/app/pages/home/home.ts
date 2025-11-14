@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Movie } from '../../features/movies/models/movie.model';
 import { Series } from '../../features/series/models/series.model';
@@ -32,31 +33,36 @@ export class Home implements OnInit, OnDestroy {
       icon: '🎬',
       title: 'Filmes em Alta',
       description: 'Descubra os filmes mais populares e bem avaliados do momento.',
-      action: 'Ver Filmes'
+      action: 'Ver Filmes',
+      route: '/movies'
     },
     {
       icon: '📺',
       title: 'Séries Incríveis',
       description: 'Explore séries aclamadas pela crítica e pelo público.',
-      action: 'Ver Séries'
+      action: 'Ver Séries',
+      route: '/series'
     },
     {
       icon: '🔍',
       title: 'Busca Avançada',
       description: 'Encontre exatamente o que você procura com nossos filtros.',
-      action: 'Buscar'
+      action: 'Buscar',
+      route: '/explorer'
     },
     {
       icon: '⭐',
       title: 'Avaliações',
       description: 'Veja avaliações e ratings de milhões de usuários.',
-      action: 'Explorar'
+      action: 'Explorar',
+      route: '/explorer'
     }
   ];
 
   constructor(
     private movieService: MovieService,
     private seriesService: SeriesService,
+    private router: Router,
     public themeService: ThemeService
   ) {}
 
@@ -164,6 +170,13 @@ export class Home implements OnInit, OnDestroy {
       element.scrollIntoView({ behavior: 'smooth' });
     }
   }
+
+  onFeatureClick(feature: any): void {
+    if (feature.route) {
+      this.router.navigate([feature.route]);
+    }
+  }
+
   onHeroClick(): void {
     const item = this.currentHeroItem;
     if (item) {

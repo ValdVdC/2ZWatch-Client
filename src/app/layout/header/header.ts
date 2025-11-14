@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { ThemeService } from '../../core/services/theme.service';
 
 @Component({
@@ -18,6 +18,10 @@ export class Header implements OnInit {
     this.isMenuOpen = !this.isMenuOpen;
   }
 
+  closeMenu(): void {
+    this.isMenuOpen = false;
+  }
+
   toggleTheme(): void {
     this.themeService.toggleTheme();
   }
@@ -25,8 +29,29 @@ export class Header implements OnInit {
   scrollToSection(sectionId: string): void {
     const element = document.getElementById(sectionId);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-      this.isMenuOpen = false;
+      // Get header height to offset scroll
+      const header = document.querySelector('.header') as HTMLElement;
+      const headerHeight = header ? header.offsetHeight : 80;
+      
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerHeight;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+      
+      this.closeMenu();
+    }
+  }
+
+  @HostListener('window:scroll', [])
+  onWindowScroll(): void {
+    const header = document.querySelector('.header');
+    if (window.pageYOffset > 50) {
+      header?.classList.add('scrolled');
+    } else {
+      header?.classList.remove('scrolled');
     }
   }
 }
