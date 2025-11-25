@@ -1,0 +1,77 @@
+.media-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin: 1.5rem 0;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.action-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+.action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.action-btn i {
+  font-size: 1.25rem;
+}
+
+.favorite-btn.active {
+  background: rgba(229, 9, 20, 0.2);
+  border-color: #e50914;
+  color: #e50914;
+}
+
+.favorite-btn.active:hover {
+  background: rgba(229, 9, 20, 0.3);
+}
+
+.watchlist-btn.active {
+  background: rgba(255, 193, 7, 0.2);
+  border-color: #ffc107;
+  color: #ffc107;
+}
+
+.watchlist-btn.active:hover {
+  background: rgba(255, 193, 7, 0.3);
+}
+
+.login-prompt-btn {
+  background: rgba(229, 9, 20, 0.1);
+  border-color: #e50914;
+}
+
+.login-prompt-btn:hover {
+  background: rgba(229, 9, 20, 0.2);
+  border-color: #e50914;
+}
+
+@media (max-width: 768px) {
+  .media-actions {
+    flex-direction: column;
+  }
+
+  .action-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

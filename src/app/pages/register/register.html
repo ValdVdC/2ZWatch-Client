@@ -1,0 +1,189 @@
+<div class="register-page login-page">
+  <div class="register-container">
+    <div class="register-card login-card">
+      <!-- Logo e Título -->
+      <div class="register-header login-header">
+        <h1 class="brand-title">2ZWatch</h1>
+        <p class="register-subtitle login-subtitle">Crie sua conta</p>
+      </div>
+
+      <!-- Mensagem de Erro -->
+      <div class="alert alert-danger" *ngIf="errorMessage" role="alert">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <span>{{ errorMessage }}</span>
+      </div>
+
+      <!-- Login com Google -->
+      <div class="social-login">
+        <button type="button" class="btn-google" (click)="loginWithGoogle()">
+          <i class="bi bi-google"></i>
+          Cadastrar com Google
+        </button>
+      </div>
+
+      <div class="divider">ou cadastre-se com email</div>
+
+      <!-- Formulário de Registro -->
+      <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
+        <!-- Campo Username -->
+        <div class="form-group mb-3">
+          <label for="username" class="form-label">
+            <i class="bi bi-person-badge-fill me-2"></i>
+            Nome de Usuário
+          </label>
+          <input
+            type="text"
+            id="username"
+            class="form-control"
+            [(ngModel)]="registerData.username"
+            name="username"
+            placeholder="Ex: joaosilva123"
+            [disabled]="loading"
+            required
+            pattern="[a-zA-Z0-9_]+"
+            minlength="3"
+            maxlength="30"
+            autocomplete="username"
+          />
+          <small class="form-text text-muted">
+            Apenas letras, números e underscore. Min. 3 caracteres.
+          </small>
+        </div>
+
+        <!-- Campo Email -->
+        <div class="form-group mb-3">
+          <label for="email" class="form-label">
+            <i class="bi bi-envelope-fill me-2"></i>
+            Email
+          </label>
+          <input
+            type="email"
+            id="email"
+            class="form-control"
+            [(ngModel)]="registerData.email"
+            name="email"
+            placeholder="seu@email.com"
+            [disabled]="loading"
+            required
+            autocomplete="email"
+          />
+        </div>
+
+        <!-- Campo Nome de Exibição (Opcional) -->
+        <div class="form-group mb-3">
+          <label for="displayName" class="form-label">
+            <i class="bi bi-card-heading me-2"></i>
+            Nome de Exibição <span class="text-muted">(opcional)</span>
+          </label>
+          <input
+            type="text"
+            id="displayName"
+            class="form-control"
+            [(ngModel)]="registerData.displayName"
+            name="displayName"
+            placeholder="Como você quer ser chamado"
+            [disabled]="loading"
+            maxlength="50"
+            autocomplete="name"
+          />
+        </div>
+
+        <!-- Campo Senha -->
+        <div class="form-group mb-3">
+          <label for="password" class="form-label">
+            <i class="bi bi-lock-fill me-2"></i>
+            Senha
+          </label>
+          <div class="password-input-wrapper">
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              id="password"
+              class="form-control"
+              [(ngModel)]="registerData.password"
+              name="password"
+              placeholder="Mínimo 8 caracteres"
+              [disabled]="loading"
+              required
+              minlength="8"
+              autocomplete="new-password"
+            />
+            <button
+              type="button"
+              class="btn-toggle-password"
+              (click)="togglePasswordVisibility()"
+              [disabled]="loading"
+            >
+              <i [class]="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+            </button>
+          </div>
+          <!-- Indicador de força da senha -->
+          <app-password-strength 
+            [password]="registerData.password"
+            [showFeedback]="true">
+          </app-password-strength>
+        </div>
+
+        <!-- Campo Confirmar Senha -->
+        <div class="form-group mb-3">
+          <label for="confirmPassword" class="form-label">
+            <i class="bi bi-shield-check me-2"></i>
+            Confirmar Senha
+          </label>
+          <div class="password-input-wrapper">
+            <input
+              [type]="showConfirmPassword ? 'text' : 'password'"
+              id="confirmPassword"
+              class="form-control"
+              [(ngModel)]="confirmPassword"
+              name="confirmPassword"
+              placeholder="Digite a senha novamente"
+              [disabled]="loading"
+              required
+              autocomplete="new-password"
+            />
+            <button
+              type="button"
+              class="btn-toggle-password"
+              (click)="toggleConfirmPasswordVisibility()"
+              [disabled]="loading"
+            >
+              <i [class]="showConfirmPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Botão de Registro -->
+        <button
+          type="submit"
+          class="btn btn-primary w-100 mb-3"
+          [disabled]="loading || !registerForm.valid"
+        >
+          <span *ngIf="!loading">
+            <i class="bi bi-person-plus-fill me-2"></i>
+            Criar Conta
+          </span>
+          <span *ngIf="loading">
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            Criando conta...
+          </span>
+        </button>
+
+        <!-- Link para Login -->
+        <div class="text-center">
+          <p class="mb-0">
+            Já tem uma conta?
+            <a routerLink="/login" class="link-primary ms-1">Fazer login</a>
+          </p>
+        </div>
+      </form>
+    </div>
+
+    <!-- Footer -->
+    <div class="register-footer">
+      <p class="text-muted mb-0">
+        <i class="bi bi-shield-check me-2"></i>
+        Ao criar uma conta, você concorda com nossos termos de uso
+      </p>
+    </div>
+  </div>
+</div>

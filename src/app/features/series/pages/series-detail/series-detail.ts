@@ -23,6 +23,8 @@ export class SeriesDetail implements OnInit, OnDestroy {
   activeTab: 'details' | 'cast' | 'videos' | 'images' | 'similar' | 'seasons' = 'details';
   showFullOverview = false;
   selectedSeason: Season | null = null;
+  isVideoModalOpen = false;
+  selectedVideoKey = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -85,8 +87,8 @@ export class SeriesDetail implements OnInit, OnDestroy {
     return this.series.backdrop_url || `https://image.tmdb.org/t/p/w1280${this.series.backdrop_path}`;
   }
 
-  get posterUrl(): string {
-    if (!this.series?.poster_path && !this.series?.poster_url) return '/assets/placeholder-series.jpg';
+  get posterUrl(): string | null {
+    if (!this.series?.poster_path && !this.series?.poster_url) return null;
     return this.series.poster_url || `https://image.tmdb.org/t/p/w500${this.series.poster_path}`;
   }
 
@@ -208,8 +210,14 @@ export class SeriesDetail implements OnInit, OnDestroy {
     }
 
     playVideo(video: Video): void {
-      // Open in new window/tab
-      window.open(video.url, '_blank', 'noopener,noreferrer');
+      // Extract video key from URL or use key directly
+      this.selectedVideoKey = video.key;
+      this.isVideoModalOpen = true;
+    }
+
+    closeVideoModal(): void {
+      this.isVideoModalOpen = false;
+      this.selectedVideoKey = '';
     }
 
   viewSeries(seriesId: number): void {
@@ -261,14 +269,14 @@ export class SeriesDetail implements OnInit, OnDestroy {
     return count.toString();
   }
 
-    getCollectionPoster(collection: Collection): string {
-      if (!collection.poster_path) return '/assets/placeholder-series.jpg';
+    getCollectionPoster(collection: Collection): string | null {
+      if (!collection.poster_path) return null;
       return `https://image.tmdb.org/t/p/w185${collection.poster_path}`;
     }
 
-  getSimilarSeriesPoster(series: any): string {
-    if (!series.poster_path) return '/assets/placeholder-series.jpg';
-    return `https://image.tmdb.org/t/p/w185${series.poster_path}`;
+  getSimilarSeriesPoster(series: any): string | null {
+    if (!series?.poster_path && !series?.poster_url) return null;
+    return series.poster_url || `https://image.tmdb.org/t/p/w185${series.poster_path}`;
   }
 
   getYear(dateString: string): string {
@@ -293,10 +301,10 @@ export class SeriesDetail implements OnInit, OnDestroy {
     return typeMap[type] || type;
   }
 
-  getSeasonPoster(season: Season): string {
+  getSeasonPoster(season: Season): string | null {
     if (season.poster_url) return season.poster_url;
     if (season.poster_path) return `https://image.tmdb.org/t/p/w300${season.poster_path}`;
-    return '/assets/placeholder-series.jpg';
+    return null;
   }
 
   formatDate(dateString: string): string {

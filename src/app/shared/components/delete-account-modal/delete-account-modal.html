@@ -1,0 +1,90 @@
+<div class="modal-overlay" *ngIf="isOpen" (click)="onOverlayClick($event)">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <div class="modal-header danger">
+      <i class="bi bi-exclamation-triangle-fill"></i>
+      <h2>Excluir Conta Permanentemente</h2>
+    </div>
+    
+    <div class="modal-body">
+      <div class="warning-box">
+        <i class="bi bi-shield-exclamation"></i>
+        <div>
+          <h3>⚠️ ATENÇÃO: Esta ação é IRREVERSÍVEL!</h3>
+          <ul>
+            <li>Todos os seus dados serão permanentemente excluídos</li>
+            <li>Seus favoritos e watchlist serão perdidos</li>
+            <li>Seu histórico de visualização será apagado</li>
+            <li>Não será possível recuperar sua conta</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="password-section">
+        <p class="instruction">Para confirmar, digite sua senha:</p>
+        
+        <div class="input-group">
+          <label for="password">Senha</label>
+          <div class="password-input-wrapper">
+            <input
+              id="password"
+              [type]="showPassword ? 'text' : 'password'"
+              [(ngModel)]="password"
+              (input)="validatePasswords()"
+              placeholder="Digite sua senha"
+              class="password-input"
+              autocomplete="current-password"
+            />
+            <button 
+              type="button"
+              (click)="togglePasswordVisibility()"
+              class="toggle-password">
+              <i [class]="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label for="confirmPassword">Confirmar Senha</label>
+          <div class="password-input-wrapper">
+            <input
+              id="confirmPassword"
+              [type]="showConfirmPassword ? 'text' : 'password'"
+              [(ngModel)]="confirmPassword"
+              (input)="validatePasswords()"
+              placeholder="Digite sua senha novamente"
+              class="password-input"
+              [class.error]="confirmPassword && !passwordsMatch"
+              autocomplete="current-password"
+            />
+            <button 
+              type="button"
+              (click)="toggleConfirmPasswordVisibility()"
+              class="toggle-password">
+              <i [class]="showConfirmPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+            </button>
+          </div>
+          <span *ngIf="confirmPassword && !passwordsMatch" class="error-message">
+            <i class="bi bi-x-circle"></i> As senhas não coincidem
+          </span>
+          <span *ngIf="confirmPassword && passwordsMatch" class="success-message">
+            <i class="bi bi-check-circle"></i> As senhas coincidem
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="modal-footer">
+      <button class="btn btn-cancel" (click)="onCancel()">
+        <i class="bi bi-x-lg"></i>
+        Cancelar
+      </button>
+      <button 
+        class="btn btn-danger" 
+        (click)="onConfirm()"
+        [disabled]="!canConfirm">
+        <i class="bi bi-trash-fill"></i>
+        Excluir Minha Conta
+      </button>
+    </div>
+  </div>
+</div>

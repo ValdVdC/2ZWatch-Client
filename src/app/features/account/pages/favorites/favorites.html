@@ -1,0 +1,161 @@
+<div class="favorites-page">
+  <!-- Confirmation Modal -->
+  <app-confirmation-modal
+    [isOpen]="showModal"
+    title="Remover dos Favoritos"
+    [message]="'Tem certeza que deseja remover ' + (favoriteToRemove?.title || '') + ' dos seus favoritos?'"
+    confirmText="Remover"
+    cancelText="Cancelar"
+    confirmClass="danger"
+    iconClass="bi bi-heart-fill text-danger"
+    (confirm)="confirmRemove()"
+    (cancel)="cancelRemove()"
+  ></app-confirmation-modal>
+
+  <div class="favorites-container">
+    <div class="page-header">
+      <div class="header-content">
+        <h1 class="page-title">
+          <i class="bi bi-heart-fill"></i>
+          Meus Favoritos
+        </h1>
+      </div>
+      <p class="subtitle">{{ favorites.length }} {{ favorites.length === 1 ? 'item' : 'itens' }} salvos</p>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-state">
+      <div class="spinner"></div>
+      <p>Carregando favoritos...</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error && !isLoading" class="empty-state">
+      <div class="empty-icon">😔</div>
+      <h3>{{ error }}</h3>
+      <button (click)="loadFavorites()" class="btn-explore">Tentar Novamente</button>
+    </div>
+
+    <!-- Favorites Content -->
+    <div *ngIf="!isLoading && !error">
+      <!-- Filters Section -->
+      <div class="filters-section">
+        <div class="filters-container">
+          <!-- Filter Type -->
+          <div class="filter-group">
+            <label class="filter-label">
+              <i class="bi bi-film"></i>
+              Tipo de Mídia
+            </label>
+            <div class="filter-buttons">
+              <button 
+                [class.active]="filterType === 'all'" 
+                (click)="onFilterChange('all')"
+                class="filter-btn">
+                <i class="bi bi-collection"></i>
+                Todos
+                <span class="count">{{ getCountByType('all') }}</span>
+              </button>
+              <button 
+                [class.active]="filterType === 'movie'" 
+                (click)="onFilterChange('movie')"
+                class="filter-btn">
+                <i class="bi bi-film"></i>
+                Filmes
+                <span class="count">{{ getCountByType('movie') }}</span>
+              </button>
+              <button 
+                [class.active]="filterType === 'series'" 
+                (click)="onFilterChange('series')"
+                class="filter-btn">
+                <i class="bi bi-tv"></i>
+                Séries
+                <span class="count">{{ getCountByType('series') }}</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Sort Options -->
+          <div class="filter-group">
+            <label class="filter-label">
+              <i class="bi bi-sort-down"></i>
+              Ordenar por
+            </label>
+            <div class="sort-buttons">
+              <button 
+                [class.active]="sortBy === 'date'" 
+                (click)="onSortChange('date')"
+                class="sort-btn">
+                <i class="bi bi-calendar-event"></i>
+                Data de adição
+              </button>
+              <button 
+                [class.active]="sortBy === 'title'" 
+                (click)="onSortChange('title')"
+                class="sort-btn">
+                <i class="bi bi-sort-alpha-down"></i>
+                Título
+              </button>
+              <button 
+                [class.active]="sortBy === 'rating'" 
+                (click)="onSortChange('rating')"
+                class="sort-btn">
+                <i class="bi bi-star-fill"></i>
+                Avaliação
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="filteredFavorites.length === 0" class="empty-state">
+        <div class="empty-icon">💔</div>
+        <h3>Nenhum favorito encontrado</h3>
+        <p *ngIf="filterType !== 'all'">Tente alterar os filtros</p>
+        <p *ngIf="filterType === 'all'">Comece a adicionar seus filmes e séries favoritos!</p>
+        <a routerLink="/explorer" class="btn-explore">Explorar Conteúdo</a>
+      </div>
+
+      <!-- Favorites Grid -->
+      <div *ngIf="filteredFavorites.length > 0" class="favorites-grid">
+        <div *ngFor="let favorite of filteredFavorites" class="favorite-card">
+          <div class="card-image">
+            <img 
+              [src]="getImageUrl(favorite.posterPath)" 
+              [alt]="favorite.title"
+            />
+            <div class="card-overlay">
+              <span class="card-type">
+                {{ favorite.mediaType === 'movie' ? '🎬 Filme' : '📺 Série' }}
+              </span>
+              <div *ngIf="favorite.rating" class="card-rating">
+                <i class="bi bi-star-fill"></i>
+                {{ favorite.rating.toFixed(1) }}
+              </div>
+            </div>
+          </div>
+          
+          <div class="card-info">
+            <a [routerLink]="getMediaLink(favorite)" class="card-title">
+              {{ favorite.title }}
+            </a>
+            <div class="card-meta">
+              <span>{{ favorite.addedAt | date: 'dd/MM/yyyy' }}</span>
+            </div>
+            <div class="card-actions">
+              <a [routerLink]="getMediaLink(favorite)" class="action-btn">
+                <i class="bi bi-play-fill"></i>
+                Ver
+              </a>
+              <button (click)="removeFavorite(favorite)" class="action-btn danger">
+                <i class="bi bi-trash-fill"></i>
+                Remover
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

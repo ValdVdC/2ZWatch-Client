@@ -1,8 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ErrorHandlerService } from '../../../../core/services/error-handler.service';
+import { LoggerService } from '../../../../core/services/logger.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
-import { Collection, Video, MovieDetail as MovieDetailModel } from '../../models/movie.model';
+import { Collection, Video, MovieDetail as MovieDetailModel, CastMember } from '../../models/movie.model';
 import { Subscription } from 'rxjs';
 import { MovieService } from '../../services/movie.service';
 
@@ -20,13 +21,16 @@ export class MovieDetail implements OnInit, OnDestroy {
   error: string | null = null;
   activeTab: 'details' | 'cast' | 'videos' | 'images' | 'similar' = 'details';
   showFullOverview = false;
+  isVideoModalOpen = false;
+  selectedVideoKey = '';
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private location: Location,
     private movieService: MovieService,
-    private errorHandler: ErrorHandlerService
+    private errorHandler: ErrorHandlerService,
+    private logger: LoggerService
   ) {}
 
   ngOnInit(): void {
@@ -69,7 +73,8 @@ export class MovieDetail implements OnInit, OnDestroy {
       error: (error) => {
         this.error = 'Erro ao carregar detalhes do filme';
         this.loading = false;
-        console.error('Error loading movie details:', error);
+        this.logger.error('Error loading movie details', error);
+        this.errorHandler.handleError(error, 'Erro ao carregar detalhes do filme');
       }
     });
 
@@ -82,8 +87,8 @@ export class MovieDetail implements OnInit, OnDestroy {
     return this.movie.backdrop_url || `https://image.tmdb.org/t/p/w1280${this.movie.backdrop_path}`;
   }
 
-  get posterUrl(): string {
-    if (!this.movie?.poster_path && !this.movie?.poster_url) return '/assets/placeholder-movie.jpg';
+  get posterUrl(): string | null {
+    if (!this.movie?.poster_path && !this.movie?.poster_url) return null;
     return this.movie.poster_url || `https://image.tmdb.org/t/p/w500${this.movie.poster_path}`;
   }
 
@@ -135,7 +140,7 @@ export class MovieDetail implements OnInit, OnDestroy {
       ?.slice(0, 3) || [];
   }
 
-  get mainCast(): any[] {
+  get mainCast(): CastMember[] {
     return this.movie?.credits?.cast?.slice(0, 12) || [];
   }
 
@@ -205,8 +210,14 @@ export class MovieDetail implements OnInit, OnDestroy {
   }
 
   playVideo(video: Video): void {
-    // Open in new window/tab
-    window.open(video.url, '_blank', 'noopener,noreferrer');
+    // Extract video key from URL or use key directly
+    this.selectedVideoKey = video.key;
+    this.isVideoModalOpen = true;
+  }
+
+  closeVideoModal(): void {
+    this.isVideoModalOpen = false;
+    this.selectedVideoKey = '';
   }
 
   viewMovie(movieId: number): void {
@@ -215,12 +226,12 @@ export class MovieDetail implements OnInit, OnDestroy {
 
   viewPerson(personId: number): void {
     // TODO: Navigate to person details page when implemented
-    console.log('View person:', personId);
+    this.logger.debug('View person:', personId);
   }
 
   viewCollection(collection: Collection): void {
     // TODO: Navigate to collection page when implemented
-    console.log('View collection:', collection);
+    this.logger.debug('View collection:', collection);
   }
 
   openLightbox(imageUrl: string): void {
@@ -250,14 +261,14 @@ export class MovieDetail implements OnInit, OnDestroy {
     return count.toString();
   }
 
-  getCollectionPoster(collection: Collection): string {
-    if (!collection.poster_path) return '/assets/placeholder-movie.jpg';
+  getCollectionPoster(collection: Collection): string | null {
+    if (!collection.poster_path) return null;
     return `https://image.tmdb.org/t/p/w185${collection.poster_path}`;
   }
 
-  getSimilarMoviePoster(movie: any): string {
-    if (!movie.poster_path) return '/assets/placeholder-movie.jpg';
-    return `https://image.tmdb.org/t/p/w185${movie.poster_path}`;
+  getSimilarMoviePoster(movie: { poster_path?: string; poster_url?: string }): string | null {
+    if (!movie?.poster_path && !movie?.poster_url) return null;
+    return movie.poster_url || `https://image.tmdb.org/t/p/w185${movie.poster_path}`;
   }
 
   getYear(dateString: string): string {

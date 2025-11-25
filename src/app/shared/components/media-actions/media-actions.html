@@ -1,0 +1,32 @@
+<div class="media-actions">
+  <button 
+    *ngIf="isAuthenticated"
+    (click)="toggleFavorite()"
+    [class.active]="isFavorite"
+    [disabled]="isLoadingFavorite"
+    class="action-btn favorite-btn"
+    [title]="isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'">
+    <i [class]="isFavorite ? 'bi bi-heart-fill' : 'bi bi-heart'"></i>
+    <span>{{ isFavorite ? 'Favoritado' : 'Favoritar' }}</span>
+  </button>
+
+  <button 
+    *ngIf="isAuthenticated"
+    (click)="toggleWatchlist()"
+    [class.active]="isInWatchlist"
+    [disabled]="isLoadingWatchlist"
+    class="action-btn watchlist-btn"
+    [title]="isInWatchlist ? 'Remover da watchlist' : 'Adicionar à watchlist'">
+    <i [class]="isInWatchlist ? 'bi bi-bookmark-fill' : 'bi bi-bookmark'"></i>
+    <span>{{ isInWatchlist ? 'Na Watchlist' : 'Assistir Depois' }}</span>
+  </button>
+
+  <button 
+    *ngIf="!isAuthenticated"
+    (click)="goToLogin()"
+    class="action-btn login-prompt-btn"
+    title="Faça login para adicionar aos favoritos">
+    <i class="bi bi-heart"></i>
+    <span>Favoritar</span>
+  </button>
+</div>

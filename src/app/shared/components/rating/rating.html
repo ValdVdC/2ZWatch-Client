@@ -1,0 +1,41 @@
+<div class="rating-component">
+  <div class="rating-header">
+    <h3 class="section-title">Avaliação</h3>
+  </div>
+
+  <!-- Média de avaliações -->
+  <div class="average-rating">
+    <div class="average-value">
+      <span class="number">{{ averageRating | number:'1.1-1' }}</span>
+      <span class="total">/10</span>
+    </div>
+    <div class="rating-count">{{ totalRatings }} {{ totalRatings === 1 ? 'avaliação' : 'avaliações' }}</div>
+  </div>
+
+  <!-- Avaliação do usuário -->
+  <div class="user-rating">
+    <p class="rating-label">{{ userRating ? 'Sua avaliação:' : 'Avalie:' }}</p>
+    
+    <!-- Mensagem de erro -->
+    <div *ngIf="errorMessage" class="error-toast">
+      <i class="bi bi-exclamation-circle me-2"></i>{{ errorMessage }}
+    </div>
+    
+    <div class="stars">
+      <button
+        *ngFor="let star of [1,2,3,4,5,6,7,8,9,10]"
+        class="star"
+        [class.filled]="getStarClass(star) === 'filled'"
+        (click)="setRating(star)"
+        (mouseenter)="onMouseEnter(star)"
+        (mouseleave)="onMouseLeave()"
+        [disabled]="!isAuthenticated"
+        [title]="star.toString()">
+        <i class="bi bi-star-fill"></i>
+      </button>
+    </div>
+    <p *ngIf="!isAuthenticated" class="login-hint">
+      <i class="bi bi-info-circle me-1"></i>Faça login para avaliar
+    </p>
+  </div>
+</div>

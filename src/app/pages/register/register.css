@@ -1,0 +1,36 @@
+/* Register Page - Importa estilos do login e personaliza */
+@import '../login/login.css';
+
+/* Personalizações específicas do registro */
+.register-page {
+  min-height: 100vh;
+  padding: 6rem 1rem 2rem; /* Considera header fixo */
+}
+
+@media (max-width: 576px) {
+  .register-page {
+    padding: 5rem 1rem 2rem;
+  }
+}
+
+.register-container {
+  width: 100%;
+  max-width: 520px;
+  position: relative;
+  z-index: 1;
+}
+
+.register-card {
+  max-width: 520px;
+}
+
+.register-header .brand-title {
+  background: linear-gradient(
+    135deg,
+    var(--secondary-color),
+    var(--accent-color)
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}

@@ -1,0 +1,36 @@
+<div *ngIf="isOpen" class="video-modal-backdrop" (click)="onBackdropClick($event)">
+  <div class="video-modal-container">
+    <!-- Header com título e botão fechar -->
+    <div class="video-modal-header">
+      <div class="video-modal-title">
+        <svg class="play-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M8 5v14l11-7z"/>
+        </svg>
+        <span>Reproduzindo Vídeo</span>
+      </div>
+      <button class="video-modal-close" (click)="onClose()" aria-label="Fechar vídeo">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    
+    <!-- Video wrapper com borda e sombra -->
+    <div class="video-wrapper">
+      <div class="video-border-glow"></div>
+      <iframe 
+        *ngIf="showIframe && videoUrl"
+        [src]="videoUrl"
+        class="video-iframe"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen
+        referrerpolicy="strict-origin-when-cross-origin">
+      </iframe>
+      <div *ngIf="!showIframe" class="video-loading">
+        <div class="loading-spinner"></div>
+      </div>
+    </div>
+  </div>
+</div>

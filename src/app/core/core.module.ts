@@ -3,10 +3,12 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { ApiService } from './services/api.service';
+import { AuthService } from './services/auth.service';
 import { CacheService } from './services/cache.service';
 import { ErrorHandlerService } from './services/error-handler.service';
 import { LoadingService } from './services/loading.service';
 import { ThemeService } from './services/theme.service';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { HttpErrorInterceptor } from './interceptors/http-error.interceptor';
 import { LoadingInterceptor } from './interceptors/loading.interceptor';
 
@@ -18,10 +20,16 @@ import { LoadingInterceptor } from './interceptors/loading.interceptor';
   ],
   providers: [
     ApiService,
+    AuthService,
     CacheService,
     ErrorHandlerService,
     LoadingService,
     ThemeService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: HttpErrorInterceptor,

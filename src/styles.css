@@ -26,6 +26,36 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  transition: overflow 0.3s ease;
+}
+
+/* Hide scrollbar when modal is open */
+body.modal-open {
+  overflow: hidden;
+  padding-right: 0 !important; /* Prevent layout shift */
+}
+
+/* Custom scrollbar styles (hidden by default when modal is open) */
+body::-webkit-scrollbar {
+  width: 10px;
+}
+
+body::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+body::-webkit-scrollbar-thumb {
+  background: var(--text-muted);
+  border-radius: 5px;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+/* Hide scrollbar completely when modal is open */
+body.modal-open::-webkit-scrollbar {
+  display: none;
 }
 
 /* Mobile first - ajustes de fonte */
@@ -362,7 +392,9 @@ img {
   background: var(--bg-tertiary);
 }
 
-.poster-container img {
+.poster-container img,
+.poster-container app-image-skeleton,
+.poster-container .image-skeleton {
   position: absolute;
   top: 0;
   left: 0;
@@ -381,7 +413,9 @@ img {
   background: var(--bg-tertiary);
 }
 
-.backdrop-container img {
+.backdrop-container img,
+.backdrop-container app-image-skeleton,
+.backdrop-container .image-skeleton {
   position: absolute;
   top: 0;
   left: 0;

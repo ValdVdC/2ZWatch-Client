@@ -61,11 +61,17 @@
             <div class="hero-poster">
               <div class="poster-container">
                 <img 
+                  *ngIf="posterUrl"
                   [src]="posterUrl" 
                   [alt]="series.name" 
                   class="poster-image"
                   loading="lazy"
-                  onerror="this.src='/assets/placeholder-series.jpg'">
+                  appImageFallback
+                  fallbackType="poster">
+                <app-image-skeleton 
+                  *ngIf="!posterUrl"
+                  type="poster">
+                </app-image-skeleton>
               </div>
             </div>
 
@@ -127,6 +133,15 @@
                 </span>
               </div>
 
+              <!-- Action Buttons -->
+              <app-media-actions 
+                [mediaId]="series.id" 
+                [mediaType]="'series'" 
+                [title]="series.name"
+                [posterPath]="series.poster_path"
+                [rating]="series.vote_average">
+              </app-media-actions>
+
               <!-- Overview -->
               <div class="series-overview" *ngIf="series.overview">
                 <h3>Sinopse</h3>
@@ -162,15 +177,6 @@
                   </svg>
                   Assistir Trailer
                 </button> -->
-                
-                <button 
-                  class="btn btn-secondary action-btn"
-                  (click)="onAddToWatchlist()">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                  </svg>
-                  Favoritar
-                </button>
                 
                 <button 
                   class="btn btn-outline action-btn"
@@ -251,16 +257,6 @@
                 <h3>Informações de Produção</h3>
                 
                 <div class="info-list">
-                  <!-- <div class="info-item" *ngIf="series.budget">
-                    <span class="info-label">Orçamento:</span>
-                    <span class="info-value">{{ formatCurrency(series.budget) }}</span>
-                  </div>
-
-                  <div class="info-item" *ngIf="series.revenue">
-                    <span class="info-label">Bilheteria:</span>
-                    <span class="info-value">{{ formatCurrency(series.revenue) }}</span>
-                  </div> -->
-
                   <div class="info-item" *ngIf="series.production_companies.length">
                     <span class="info-label">Produtoras:</span>
                     <div class="info-value">
@@ -301,21 +297,6 @@
                   </div>
                 </div>
               </div>
-
-              <!-- Collection Info -->
-              <!-- <div class="collection-info" *ngIf="series.belongs_to_collection">
-                <h3>Faz parte da coleção</h3>
-                <div class="collection-card" (click)="viewCollection(series.belongs_to_collection!)">
-                  <img 
-                    [src]="getCollectionPoster(series.belongs_to_collection!)"
-                    [alt]="series.belongs_to_collection!.name"
-                    class="collection-poster">
-                  <div class="collection-info">
-                    <h4>{{ series.belongs_to_collection!.name }}</h4>
-                    <span class="collection-link">Ver coleção completa</span>
-                  </div>
-                </div>
-              </div> -->
             </div>
           </div>
 
@@ -325,9 +306,16 @@
               <div class="cast-member" *ngFor="let member of mainCast" (click)="viewPerson(member.id)">
                 <div class="cast-photo">
                   <img 
-                    [src]="member.profile_url || '/assets/placeholder-person.jpg'"
+                    *ngIf="member.profile_url"
+                    [src]="member.profile_url"
                     [alt]="member.name"
-                    onerror="this.src='/assets/placeholder-person.jpg'">
+                    loading="lazy"
+                    appImageFallback
+                    fallbackType="profile">
+                  <app-image-skeleton 
+                    *ngIf="!member.profile_url"
+                    type="profile">
+                  </app-image-skeleton>
                 </div>
                 <div class="cast-info">
                   <h4 class="cast-name">{{ member.name }}</h4>
@@ -410,9 +398,16 @@
                 (click)="viewSeries(similar.id)">
                 <div class="similar-poster">
                   <img 
+                    *ngIf="getSimilarSeriesPoster(similar)"
                     [src]="getSimilarSeriesPoster(similar)"
                     [alt]="similar.name"
-                    onerror="this.src='/assets/placeholder-series.jpg'">
+                    loading="lazy"
+                    appImageFallback
+                    fallbackType="poster">
+                  <app-image-skeleton 
+                    *ngIf="!getSimilarSeriesPoster(similar)"
+                    type="poster">
+                  </app-image-skeleton>
                 </div>
                 <div class="similar-info">
                   <h4>{{ similar.name }}</h4>
@@ -444,9 +439,16 @@
                   (click)="viewSeason(series.id, season.season_number)">
                   <div class="season-poster">
                     <img 
+                      *ngIf="getSeasonPoster(season)"
                       [src]="getSeasonPoster(season)"
                       [alt]="season.name"
-                      onerror="this.src='/assets/placeholder-series.jpg'">
+                      loading="lazy"
+                      appImageFallback
+                      fallbackType="poster">
+                    <app-image-skeleton 
+                      *ngIf="!getSeasonPoster(season)"
+                      type="poster">
+                    </app-image-skeleton>
                   </div>
                   <div class="season-info">
                     <h4 class="season-title">{{ season.name }}</h4>
@@ -474,6 +476,28 @@
           </div>
         </div>
       </div>
+
+      <!-- Ratings and Comments Section -->
+      <div class="ratings-comments-section">
+        <div class="container">
+          <app-rating 
+            [mediaType]="'series'" 
+            [mediaId]="series.id">
+          </app-rating>
+
+          <app-comments 
+            [mediaType]="'series'" 
+            [mediaId]="series.id">
+          </app-comments>
+        </div>
+      </div>
     </div>
   </div>
+
+  <!-- Video Player Modal -->
+  <app-video-player-modal
+    [isOpen]="isVideoModalOpen"
+    [videoKey]="selectedVideoKey"
+    (close)="closeVideoModal()">
+  </app-video-player-modal>
 </div>

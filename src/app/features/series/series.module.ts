@@ -4,6 +4,9 @@ import { RouterModule, Routes } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { SharedModule } from '../../shared/shared.module';
+import { MediaActionsComponent } from '../../shared/components/media-actions/media-actions';
+import { RatingComponent } from '../../shared/components/rating/rating';
+import { CommentsComponent } from '../../shared/components/comments/comments';
 
 // Componentes
 
@@ -67,7 +70,10 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     FormsModule,
     ReactiveFormsModule,
-    SharedModule
+    SharedModule,
+    MediaActionsComponent,
+    RatingComponent,
+    CommentsComponent
   ],
   exports: [
 

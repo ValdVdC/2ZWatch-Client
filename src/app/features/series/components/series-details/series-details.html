@@ -183,7 +183,7 @@
               <h3>Informações de Produção</h3>
               
               <div class="info-grid">
-                <div class="info-item" *ngIf="series.production_companies?.length">
+                <div class="info-item" *ngIf="series.production_companies.length">
                   <span class="info-label">Produtoras:</span>
                   <div class="info-value">
                     <span *ngFor="let company of series.production_companies; let last = last">
@@ -192,7 +192,7 @@
                   </div>
                 </div>
 
-                <div class="info-item" *ngIf="series.production_countries?.length">
+                <div class="info-item" *ngIf="series.production_countries.length">
                   <span class="info-label">Países:</span>
                   <div class="info-value">
                     <span *ngFor="let country of series.production_countries; let last = last">
@@ -211,7 +211,7 @@
                   <div class="info-value">{{ revenue }}</div>
                 </div> -->
 
-                <div class="info-item" *ngIf="series.spoken_languages?.length">
+                <div class="info-item" *ngIf="series.spoken_languages.length">
                   <span class="info-label">Idiomas:</span>
                   <div class="info-value">
                     <span *ngFor="let lang of series.spoken_languages; let last = last">
@@ -281,7 +281,7 @@
         <!-- Images Tab -->
         <div class="tab-panel" *ngIf="activeTab === 'images'">
           <div class="images-section" *ngIf="series.images">
-            <div class="image-category" *ngIf="series.images.backdrops?.length">
+            <div class="image-category" *ngIf="series.images.backdrops.length">
               <h3>Imagens de Fundo</h3>
               <div class="images-grid">
                 <div 
@@ -292,7 +292,7 @@
               </div>
             </div>
 
-            <div class="image-category" *ngIf="series.images.posters?.length">
+            <div class="image-category" *ngIf="series.images.posters.length">
               <h3>Pôsteres</h3>
               <div class="images-grid">
                 <div 

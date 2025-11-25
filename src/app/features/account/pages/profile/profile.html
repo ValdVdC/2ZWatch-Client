@@ -1,0 +1,160 @@
+<div class="profile-container">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Carregando perfil...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !isLoading" class="error-state">
+    <p>{{ error }}</p>
+    <button (click)="loadProfile()" class="retry-btn">Tentar Novamente</button>
+  </div>
+
+  <!-- Profile Content -->
+  <div *ngIf="profile && !isLoading" class="profile-content">
+    <!-- Header with Avatar and Basic Info -->
+    <div class="profile-header">
+      <div class="avatar-section">
+        <div class="avatar-wrapper">
+          <img 
+            [src]="getAvatarUrl()" 
+            [alt]="profile.username"
+            class="avatar"
+          />
+          <div *ngIf="isEditing" class="avatar-overlay">
+            <label for="avatar-upload" class="upload-label">
+              <span class="upload-icon">📷</span>
+              <span>Alterar foto</span>
+            </label>
+            <input 
+              id="avatar-upload" 
+              type="file" 
+              accept="image/*"
+              (change)="onFileSelected($event)"
+              style="display: none;"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="profile-info">
+        <div *ngIf="!isEditing" class="view-mode">
+          <h1 class="username">{{ profile.username }}</h1>
+          <p class="email">{{ profile.email }}</p>
+          <p *ngIf="profile.bio" class="bio">{{ profile.bio }}</p>
+          <p class="member-since">Membro desde {{ formatDate(profile.createdAt) }}</p>
+        </div>
+
+        <div *ngIf="isEditing" class="edit-mode">
+          <div class="form-group">
+            <label for="username">Nome de usuário</label>
+            <input 
+              id="username"
+              type="text" 
+              [(ngModel)]="editData.username"
+              class="input-field"
+              placeholder="Seu nome de usuário"
+            />
+          </div>
+          <div class="form-group">
+            <label for="bio">Bio</label>
+            <textarea 
+              id="bio"
+              [(ngModel)]="editData.bio"
+              class="input-field textarea"
+              placeholder="Conte um pouco sobre você..."
+              rows="3"
+              maxlength="200"
+            ></textarea>
+            <span class="char-count">{{ editData.bio.length }}/200</span>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button 
+            *ngIf="!isEditing" 
+            (click)="toggleEdit()" 
+            class="btn btn-primary"
+          >
+            ✏️ Editar Perfil
+          </button>
+          <button 
+            *ngIf="isEditing" 
+            (click)="saveProfile()" 
+            class="btn btn-success"
+          >
+            ✅ Salvar
+          </button>
+          <button 
+            *ngIf="isEditing" 
+            (click)="toggleEdit()" 
+            class="btn btn-secondary"
+          >
+            ❌ Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Section -->
+    <div *ngIf="stats" class="stats-section">
+      <h2 class="section-title">Estatísticas</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">🎬</div>
+          <div class="stat-value">{{ stats.moviesWatched }}</div>
+          <div class="stat-label">Filmes Assistidos</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📺</div>
+          <div class="stat-value">{{ stats.seriesWatched }}</div>
+          <div class="stat-label">Séries Assistidas</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">⏱️</div>
+          <div class="stat-value">{{ formatWatchTime(stats.totalWatchTime) }}</div>
+          <div class="stat-label">Tempo Total</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">❤️</div>
+          <div class="stat-value">{{ stats.favoritesCount }}</div>
+          <div class="stat-label">Favoritos</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📋</div>
+          <div class="stat-value">{{ stats.watchlistCount }}</div>
+          <div class="stat-label">Na Watchlist</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">⭐</div>
+          <div class="stat-value">{{ stats.reviewsCount }}</div>
+          <div class="stat-label">Avaliações</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="quick-links">
+      <h2 class="section-title">Acesso Rápido</h2>
+      <div class="links-grid">
+        <a routerLink="/account/favorites" class="link-card">
+          <span class="link-icon">❤️</span>
+          <span class="link-label">Meus Favoritos</span>
+        </a>
+        <a routerLink="/account/watchlist" class="link-card">
+          <span class="link-icon">📋</span>
+          <span class="link-label">Watchlist</span>
+        </a>
+        <a routerLink="/account/settings" class="link-card">
+          <span class="link-icon">⚙️</span>
+          <span class="link-label">Configurações</span>
+        </a>
+        <button (click)="logout()" class="link-card logout-link">
+          <span class="link-icon">🚪</span>
+          <span class="link-label">Sair</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

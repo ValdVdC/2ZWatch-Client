@@ -1,0 +1,137 @@
+<div class="comments-component">
+  <div class="comments-header">
+    <h3 class="section-title">Comentários ({{ comments.length }})</h3>
+  </div>
+
+  <!-- Mensagem de erro -->
+  <div *ngIf="errorMessage" class="error-toast">
+    <i class="bi bi-exclamation-circle me-2"></i>{{ errorMessage }}
+  </div>
+
+  <!-- Formulário de novo comentário -->
+  <div *ngIf="isAuthenticated" class="new-comment-form">
+    <textarea
+      [(ngModel)]="newComment"
+      placeholder="Escreva seu comentário..."
+      maxlength="1000"
+      rows="3"
+      class="form-control comment-textarea"></textarea>
+    <div class="form-actions">
+      <span class="char-count">{{ newComment.length }}/1000</span>
+      <button 
+        class="btn btn-primary"
+        (click)="createComment()"
+        [disabled]="!newComment.trim()">
+        <i class="bi bi-send me-2"></i>Enviar
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="!isAuthenticated" class="login-prompt">
+    <i class="bi bi-info-circle me-2"></i>
+    Faça login para comentar
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Carregando...</span>
+    </div>
+  </div>
+
+  <!-- Lista de comentários -->
+  <div *ngIf="!isLoading" class="comments-list">
+    <div *ngIf="comments.length === 0" class="no-comments">
+      <i class="bi bi-chat-quote"></i>
+      <p>Seja o primeiro a comentar!</p>
+    </div>
+
+    <div *ngFor="let comment of comments" class="comment-item">
+      <div class="comment-avatar">
+        <img [src]="getAvatarUrl(comment.userId.avatar)" [alt]="comment.userId.username">
+      </div>
+
+      <div class="comment-content">
+        <div class="comment-header">
+          <span class="comment-author">{{ comment.userId.displayName || comment.userId.username }}</span>
+          <span class="comment-date">{{ formatDate(comment.createdAt) }}</span>
+        </div>
+
+        <!-- Exibir comentário -->
+        <div *ngIf="editingCommentId !== comment._id" class="comment-text">
+          {{ comment.content }}
+        </div>
+
+        <!-- Editar comentário -->
+        <div *ngIf="editingCommentId === comment._id" class="edit-form">
+          <textarea
+            [(ngModel)]="editingContent"
+            class="form-control comment-textarea"
+            maxlength="1000"
+            rows="3"></textarea>
+          <div class="edit-actions">
+            <button class="btn btn-sm btn-secondary" (click)="cancelEdit()">Cancelar</button>
+            <button class="btn btn-sm btn-primary" (click)="saveEdit(comment._id)">Salvar</button>
+          </div>
+        </div>
+
+        <!-- Ações do comentário -->
+        <div class="comment-actions">
+          <button 
+            class="action-btn"
+            [class.liked]="isCommentLiked(comment)"
+            (click)="toggleLike(comment._id)">
+            <i class="bi" [class.bi-heart-fill]="isCommentLiked(comment)" [class.bi-heart]="!isCommentLiked(comment)"></i>
+            <span>{{ comment.likes.length }}</span>
+          </button>
+
+          <button 
+            *ngIf="isCommentOwner(comment) && editingCommentId !== comment._id"
+            class="action-btn"
+            (click)="startEdit(comment)">
+            <i class="bi bi-pencil"></i>
+            Editar
+          </button>
+
+          <button 
+            *ngIf="isCommentOwner(comment) && showDeleteConfirm !== comment._id"
+            class="action-btn delete-btn"
+            (click)="confirmDelete(comment._id)">
+            <i class="bi bi-trash"></i>
+            Excluir
+          </button>
+
+          <!-- Confirmação de exclusão -->
+          <div *ngIf="showDeleteConfirm === comment._id" class="delete-confirm">
+            <span class="confirm-text">Tem certeza?</span>
+            <button class="btn btn-sm btn-danger" (click)="deleteComment(comment._id)">
+              <i class="bi bi-check"></i> Sim
+            </button>
+            <button class="btn btn-sm btn-secondary" (click)="cancelDelete()">
+              <i class="bi bi-x"></i> Não
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Paginação -->
+  <div *ngIf="totalPages > 1 && !isLoading" class="pagination-controls">
+    <button 
+      class="btn btn-outline-primary"
+      (click)="previousPage()"
+      [disabled]="currentPage === 1">
+      <i class="bi bi-chevron-left"></i>
+      Anterior
+    </button>
+    <span class="page-info">Página {{ currentPage }} de {{ totalPages }}</span>
+    <button 
+      class="btn btn-outline-primary"
+      (click)="nextPage()"
+      [disabled]="currentPage === totalPages">
+      Próxima
+      <i class="bi bi-chevron-right"></i>
+    </button>
+  </div>
+</div>

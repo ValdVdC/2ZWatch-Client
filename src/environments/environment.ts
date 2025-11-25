@@ -2,6 +2,7 @@ export const environment = {
   production: false,
   api: {
     baseUrl: 'http://localhost:3000/api',
+    serverUrl: 'http://localhost:3000',
     timeout: 10000
   },
   tmdb: {
@@ -14,5 +15,6 @@ export const environment = {
   pagination: {
     defaultPageSize: 20,
     pageSizeOptions: [10, 20, 50]
-  }
+  },
+  logLevel: 'debug' as const
 };
